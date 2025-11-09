@@ -1,4 +1,4 @@
-<p-button label="Create Profile" [raised]="true" severity="success" class="right" (onClick)="navigateTo('candidates/view')"/>
+<p-button label="Create Profile" [raised]="true" severity="success" class="right" (onClick)="navigateTo('candidates/create')"/>
 
 <div class="card mt-4">
     <h2>List of Candidates</h2>
@@ -65,7 +65,7 @@
             </td>
         </tr>
         <ng-template #body let-product>
-            <tr>
+            <tr (click)="navigateTo('candidates/view')" class="tr-hover">
                 <td>{{ product.code }}</td>
                 <td>{{ product.name }}</td>
                 <td>{{ product.years }}</td>
