@@ -17,6 +17,8 @@ import { CandidateService } from '../../services/candidate.service';
 import { UtilService } from '../../services/util.service';
 import { MessageService } from 'primeng/api';
 import {Tooltip} from 'primeng/tooltip';
+import { SplitButtonModule } from 'primeng/splitbutton';
+import { SpeedDial } from 'primeng/speeddial';
 
 @Component({
   selector: 'app-candidate',
@@ -33,20 +35,57 @@ import {Tooltip} from 'primeng/tooltip';
     IconFieldModule,
     ButtonModule,
     TagModule,
-    Tooltip
+    Tooltip,
+    SplitButtonModule,
+    SpeedDial
   ],
   providers: [CandidateService, UtilService, MessageService],
 })
 export class Candidate implements OnInit {
 
   candidateList: any[] = [];
-
+  items:any[] = [];
   constructor(
     private router: Router,
     private service: CandidateService,
     private utilService: UtilService,
     private cd: ChangeDetectorRef // inject ChangeDetectorRef
-  ) {}
+  ) {
+     this.items = [
+            {
+                label: 'Edit',
+                icon: 'pi pi-refresh',
+                command: () => {
+                },
+            },
+            {
+                label: 'View',
+                icon: 'pi pi-times',
+                command: () => {
+                },
+            },
+
+            // {
+            //     separator: true,
+            // },
+            {
+                label: 'Proceed Further',
+                icon: 'pi pi-times',
+                command: () => {
+                },
+            },
+            // {
+            //     separator: true,
+            // },
+            {
+                label: 'Quit',
+                icon: 'pi pi-power-off',
+                command: () => {
+                    window.open('https://angular.io/', '_blank');
+                },
+            },
+        ];
+  }
 
   ngOnInit(): void {
     this.fetchAll();

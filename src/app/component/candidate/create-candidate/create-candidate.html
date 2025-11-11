@@ -3,9 +3,10 @@
   <p-toast position="top-right"></p-toast>
 
   <div class="header">
-    <button pButton label="← Back" class="p-button-secondary" (click)="goBack()"></button>
-    <h2>Create Candidate Profile</h2>
+    <button pButton label="Back" class="p-button-secondary" (click)="goBack()"><i class="pi pi-arrow-left"></i></button>
   </div>
+    <h2>Create Candidate Profile</h2>
+
 
   <form [formGroup]="candidateForm" (ngSubmit)="saveCandidate()" class="candidate-form">
 

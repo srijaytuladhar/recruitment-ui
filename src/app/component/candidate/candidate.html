@@ -1,7 +1,7 @@
 <div class="card">
   <div class="header flex justify-content-between align-items-center mb-2">
     <h2>List of Candidates</h2>
-    <p-button label="Create Profile" [raised]="true" severity="success" (click)="navigateTo('candidates/create')"></p-button>
+    <p-button label="Create Profile" [raised]="true" severity="success" (click)="navigateTo('candidates/create')"><i class="pi pi-plus"></i></p-button>
   </div>
 
   <div class="mb-3" style="max-width: 300px;">
@@ -24,12 +24,12 @@
     [rowsPerPageOptions]="[10, 25, 50]"
     [globalFilterFields]="['name','currentAddress','emailAddress','contactNumber','jobLocationDesired','jobVertical','totalYearsOfExperience']"
     [scrollable]="true"
-    scrollHeight="400px"
     [responsiveLayout]="'scroll'">
-
+    <!--    [rowsPerPageOptions]="[10, 25, 50]" -->
     <!-- Table Header -->
     <ng-template pTemplate="header">
       <tr>
+        <th>Action</th>
         <th pSortableColumn="name">Name <p-sortIcon field="name"></p-sortIcon></th>
         <th pSortableColumn="currentAddress">Current Address <p-sortIcon field="currentAddress"></p-sortIcon></th>
         <th pSortableColumn="emailAddress">Email <p-sortIcon field="emailAddress"></p-sortIcon></th>
@@ -42,14 +42,15 @@
 
     <!-- Table Body -->
     <ng-template pTemplate="body" let-candidate>
-      <tr (click)="navigateToView(candidate.emailAddress)" class="tr-hover">
-        <td [pTooltip]="candidate.name" tooltipPosition="top">{{ candidate.name }}</td>
-        <td [pTooltip]="candidate.currentAddress" tooltipPosition="top">{{ candidate.currentAddress }}</td>
-        <td [pTooltip]="candidate.emailAddress" tooltipPosition="top">{{ candidate.emailAddress }}</td>
-        <td [pTooltip]="candidate.contactNumber" tooltipPosition="top">{{ candidate.contactNumber }}</td>
-        <td [pTooltip]="candidate.jobLocationDesired" tooltipPosition="top">{{ candidate.jobLocationDesired }}</td>
-        <td [pTooltip]="candidate.jobVertical" tooltipPosition="top">{{ candidate.jobVertical }}</td>
-        <td [pTooltip]="candidate.totalYearsOfExperience" tooltipPosition="top">{{ candidate.totalYearsOfExperience }}</td>
+      <tr (click)="navigateToView(candidate.id)" class="tr-hover">
+        <td (click)="$event.stopPropagation()"><p-splitbutton label="" dropdownIcon="pi pi-cog" [model]="items" /></td>
+        <td tooltipPosition="top">{{ candidate.name }}</td>
+        <td tooltipPosition="top">{{ candidate.currentAddress }}</td>
+        <td tooltipPosition="top">{{ candidate.emailAddress }}</td>
+        <td tooltipPosition="top">{{ candidate.contactNumber }}</td>
+        <td tooltipPosition="top">{{ candidate.jobLocationDesired }}</td>
+        <td tooltipPosition="top">{{ candidate.jobVertical }}</td>
+        <td tooltipPosition="top">{{ candidate.totalYearsOfExperience }}</td>
       </tr>
     </ng-template>
 

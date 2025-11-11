@@ -2,9 +2,9 @@
   <p-toast position="top-right"></p-toast>
 
   <div class="header">
-    <button pButton label="← Back" class="p-button-secondary" (click)="goBack()"></button>
-    <h2>Candidate Details</h2>
+    <button pButton label="Back" class="p-button-secondary" (click)="goBack()"><i class="pi pi-arrow-left"></i></button>
   </div>
+  <h2>Candidate Details</h2>
 
   <div *ngIf="candidate; else loading" class="card">
 
@@ -17,7 +17,7 @@
     <div class="info-row"><div class="info-label"><i class="pi pi-clock"></i> Experience</div><div class="info-value">{{ candidate.totalYearsOfExperience }} yrs</div></div>
     <div class="info-row"><div class="info-label"><i class="pi pi-check-circle"></i> Status</div><div class="info-value">{{ candidate.status }}</div></div>
 
-    <div class="actions">
+    <div class="actions" *ngIf="candidate.resumeBase64">
       <button pButton type="button" label="Download Resume" icon="pi pi-download" class="p-button-success" (click)="downloadResume()"></button>
       <button pButton type="button" label="View Resume" icon="pi pi-eye" class="p-button-info" (click)="viewResume()"></button>
     </div>

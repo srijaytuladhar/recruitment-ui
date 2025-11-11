@@ -50,8 +50,8 @@ export class ViewCandidate implements OnInit {
   }
 
   fetchCandidate() {
-    const email = this.route.snapshot.paramMap.get('emailAddress');
-    if (!email) return this.util.toastr('Invalid email', true);
+    const email = this.route.snapshot.paramMap.get('id');
+    if (!email) return this.util.toastr('Invalid id', true);
 
     this.service.fetchCandidateByEmail(email).subscribe({
       next: (res: any) => {

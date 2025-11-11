@@ -18,9 +18,8 @@ export class CandidateService {
 
   }
 
-  fetchCandidateByEmail(email: string) {
-    return this._http.get<any>(PathConfig.API_ENDPOINT + `api/candidate/detail`, {
-      params: { email }
+  fetchCandidateByEmail(id: string) {
+    return this._http.get<any>(PathConfig.API_ENDPOINT + `api/candidate/detail/${id}`, {
     });
   }
 
