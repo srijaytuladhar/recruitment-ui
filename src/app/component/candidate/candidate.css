@@ -1,9 +1,44 @@
 .right {
-    float: right;
+  float: right;
+}
+
+.table-responsive {
+  overflow-x: auto;
+  width: 100%;
+}
+
+.p-table {
+  width: 100%;
+  table-layout: auto;
+}
+
+.p-table th,
+.p-table td {
+  text-align: left;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  padding: 0.5rem 1rem;
+  max-width: 200px;
+}
+
+.tr-hover {
+  cursor: pointer;
+  transition: background-color 0.4s ease, color 0.4s ease, font-weight 0.2s ease;
 }
 
 .tr-hover:hover {
-    cursor: pointer;
-    /* text-decoration: underline; */
-    font-weight: bold;
+  background-color: #f5f5f5;
+  color: #333;
+  font-weight: 500;
 }
+
+.tr-hover:hover {
+  background-color: #f5f5f5;
+  color: #333;
+  font-weight: 500;
+}
+
+
+
+

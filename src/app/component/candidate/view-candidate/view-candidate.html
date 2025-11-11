@@ -1,3 +1,56 @@
-<p-button label="Go Back" [raised]="true" severity="contrast" class="right" (onClick)="navigateTo('candidates')"/>
+<div class="container">
+  <p-toast position="top-right"></p-toast>
 
-<p>view-candidate works!</p>
+  <div class="header">
+    <button pButton label="← Back" class="p-button-secondary" (click)="goBack()"></button>
+    <h2>Candidate Details</h2>
+  </div>
+
+  <div *ngIf="candidate; else loading" class="card">
+
+    <div class="info-row"><div class="info-label"><i class="pi pi-user"></i> Name</div><div class="info-value">{{ candidate.name }}</div></div>
+    <div class="info-row"><div class="info-label"><i class="pi pi-envelope"></i> Email</div><div class="info-value">{{ candidate.emailAddress }}</div></div>
+    <div class="info-row"><div class="info-label"><i class="pi pi-map-marker"></i> Address</div><div class="info-value">{{ candidate.currentAddress }}</div></div>
+    <div class="info-row"><div class="info-label"><i class="pi pi-phone"></i> Contact</div><div class="info-value">{{ candidate.contactNumber }}</div></div>
+    <div class="info-row"><div class="info-label"><i class="pi pi-briefcase"></i> Job Location</div><div class="info-value">{{ candidate.jobLocationDesired }}</div></div>
+    <div class="info-row"><div class="info-label"><i class="pi pi-sitemap"></i> Job Vertical</div><div class="info-value">{{ candidate.jobVertical }}</div></div>
+    <div class="info-row"><div class="info-label"><i class="pi pi-clock"></i> Experience</div><div class="info-value">{{ candidate.totalYearsOfExperience }} yrs</div></div>
+    <div class="info-row"><div class="info-label"><i class="pi pi-check-circle"></i> Status</div><div class="info-value">{{ candidate.status }}</div></div>
+
+    <div class="actions">
+      <button pButton type="button" label="Download Resume" icon="pi pi-download" class="p-button-success" (click)="downloadResume()"></button>
+      <button pButton type="button" label="View Resume" icon="pi pi-eye" class="p-button-info" (click)="viewResume()"></button>
+    </div>
+
+  </div>
+
+  <ng-template #loading>
+    <p>Loading candidate details...</p>
+  </ng-template>
+
+  <p-dialog
+    header="Resume Preview"
+    [(visible)]="displayResumeModal"
+    [modal]="true"
+    [closable]="true"
+    [resizable]="true"
+    [draggable]="false"
+    [style]="{ width: '95vw', maxWidth: '95vw', height: '95vh', maxHeight: '95vh', padding: '0' }"
+    [contentStyle]="{ height: 'calc(95vh - 50px)', overflow: 'auto', padding: '0' }">
+    <ng-container *ngIf="resumeSrc">
+      <iframe
+        *ngIf="resumeMimeType === 'application/pdf'"
+        [src]="resumeSrc | safe"
+        width="100%"
+        height="100%"
+        style="border:none;"></iframe>
+      <img
+        *ngIf="resumeMimeType.startsWith('image/')"
+        [src]="resumeSrc"
+        width="100%"
+        style="height:100%; object-fit:contain; display:block; margin:auto;" />
+    </ng-container>
+
+  </p-dialog>
+
+</div>
