@@ -17,6 +17,7 @@ body, html, :host {
   display: flex;
   flex-direction: column;
   transition: width 0.3s;
+  min-height: 100vh;
 }
 
 .sidebar.collapsed {

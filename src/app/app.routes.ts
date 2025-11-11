@@ -7,7 +7,7 @@ import { CreateCandidate } from './component/candidate/create-candidate/create-c
 export const routes: Routes = [
   { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
   { path: 'candidates', component: Candidate },
-  { path: 'candidates/view', component: ViewCandidate },
+  { path: 'candidates/view/:emailAddress', component: ViewCandidate },
   { path: 'candidates/create', component: CreateCandidate },
   { path: 'dashboard', component: Dashboard },
   { path: '**', redirectTo: 'dashboard' },

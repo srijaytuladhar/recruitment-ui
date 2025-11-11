@@ -1,78 +1,63 @@
-<p-button label="Create Profile" [raised]="true" severity="success" class="right" (onClick)="navigateTo('candidates/create')"/>
-
-<div class="card mt-4">
+<div class="card">
+  <div class="header flex justify-content-between align-items-center mb-2">
     <h2>List of Candidates</h2>
- <p-iconfield iconPosition="left" class="ml-auto">
-                <p-inputicon>
-                    <i class="pi pi-search"></i>
-                </p-inputicon>
-                <input pInputText type="text" (input)="dt1.filterGlobal($event.target.value, 'contains')" placeholder="Search keyword" />
-            </p-iconfield>
-        
-            <!-- <div class="mb-4" style="width: 40%;">
-                <label>Years</label>
-                <input type="text" pInputText [(ngModel)]="value" class=""/>
-                <p-slider [(ngModel)]="value" class="" />
-            </div> -->
+    <p-button label="Create Profile" [raised]="true" severity="success" (click)="navigateTo('candidates/create')"></p-button>
+  </div>
 
-    <p-table [globalFilterFields]="['code','name','years','price','category','quantity']" #dt1 [value]="products" sortField="price" [sortOrder]="-1" [tableStyle]="{ 'min-width': '60rem' }">
-       
-        <ng-template #header>
-            <tr>
-                <th pSortableColumn="code" style="width:20%">
-                    <div class="flex items-center gap-2">
-                        Code
-                        <p-sortIcon field="code" />
-                    </div>
-                </th>
-                <th pSortableColumn="name" style="width:20%">
-                    <div class="flex items-center gap-2">
-                        Name
-                        <p-sortIcon field="name" />
-                    </div>
-                </th>
-                <th pSortableColumn="years" style="width:20%">
+  <div class="mb-3" style="max-width: 300px;">
+    <p-iconfield>
+      <p-inputicon class="pi pi-search"></p-inputicon>
+      <input
+        type="text"
+        pInputText
+        placeholder="Search candidates"
+        (input)="dt1.filterGlobal($event.target.value, 'contains')"
+      />
+    </p-iconfield>
+  </div>
 
-                    <div class="flex items-center gap-2">
-                        Years Of Experience
-                        <p-sortIcon field="years" />
-                        <!-- <p-columnFilter type="text" field="years" display="menu" /> -->
-                    </div>
-                </th>
-                <th pSortableColumn="price" style="width:20%">
-                    <div class="flex items-center gap-2">
-                        Salary
-                        <p-sortIcon field="price" />
-                    </div>
-                </th>
-                <th pSortableColumn="category" style="width:20%">
-                    <div class="flex items-center gap-2">
-                        Field
-                        <p-sortIcon field="category" />
-                    </div>
-                </th>
-                <th pSortableColumn="quantity" style="width:20%">
-                    <div class="flex items-center gap-2">
-                        Age
-                        <p-sortIcon field="quantity" />
-                    </div>
-                </th>
-            </tr>
-        </ng-template>
-        <tr>
-            <td>
-                <p-columnFilter type="text" field="country.name" placeholder="Enter key to search" ariaLabel="Filter Country"></p-columnFilter>
-            </td>
-        </tr>
-        <ng-template #body let-product>
-            <tr (click)="navigateTo('candidates/view')" class="tr-hover">
-                <td>{{ product.code }}</td>
-                <td>{{ product.name }}</td>
-                <td>{{ product.years }}</td>
-                <td>{{ product.price | currency : 'INR' }}</td>
-                <td>{{ product.category }}</td>
-                <td>{{ product.quantity }}</td>
-            </tr>
-        </ng-template>
-    </p-table>
+  <p-table
+    #dt1
+    [value]="candidateList"
+    [paginator]="true"
+    [rows]="10"
+    [rowsPerPageOptions]="[10, 25, 50]"
+    [globalFilterFields]="['name','currentAddress','emailAddress','contactNumber','jobLocationDesired','jobVertical','totalYearsOfExperience']"
+    [scrollable]="true"
+    scrollHeight="400px"
+    [responsiveLayout]="'scroll'">
+
+    <!-- Table Header -->
+    <ng-template pTemplate="header">
+      <tr>
+        <th pSortableColumn="name">Name <p-sortIcon field="name"></p-sortIcon></th>
+        <th pSortableColumn="currentAddress">Current Address <p-sortIcon field="currentAddress"></p-sortIcon></th>
+        <th pSortableColumn="emailAddress">Email <p-sortIcon field="emailAddress"></p-sortIcon></th>
+        <th pSortableColumn="contactNumber">Contact <p-sortIcon field="contactNumber"></p-sortIcon></th>
+        <th pSortableColumn="jobLocationDesired">Location <p-sortIcon field="jobLocationDesired"></p-sortIcon></th>
+        <th pSortableColumn="jobVertical">Vertical <p-sortIcon field="jobVertical"></p-sortIcon></th>
+        <th pSortableColumn="totalYearsOfExperience">Experience <p-sortIcon field="totalYearsOfExperience"></p-sortIcon></th>
+      </tr>
+    </ng-template>
+
+    <!-- Table Body -->
+    <ng-template pTemplate="body" let-candidate>
+      <tr (click)="navigateToView(candidate.emailAddress)" class="tr-hover">
+        <td [pTooltip]="candidate.name" tooltipPosition="top">{{ candidate.name }}</td>
+        <td [pTooltip]="candidate.currentAddress" tooltipPosition="top">{{ candidate.currentAddress }}</td>
+        <td [pTooltip]="candidate.emailAddress" tooltipPosition="top">{{ candidate.emailAddress }}</td>
+        <td [pTooltip]="candidate.contactNumber" tooltipPosition="top">{{ candidate.contactNumber }}</td>
+        <td [pTooltip]="candidate.jobLocationDesired" tooltipPosition="top">{{ candidate.jobLocationDesired }}</td>
+        <td [pTooltip]="candidate.jobVertical" tooltipPosition="top">{{ candidate.jobVertical }}</td>
+        <td [pTooltip]="candidate.totalYearsOfExperience" tooltipPosition="top">{{ candidate.totalYearsOfExperience }}</td>
+      </tr>
+    </ng-template>
+
+    <ng-template pTemplate="emptymessage">
+      <tr>
+        <td colspan="7">No candidates found.</td>
+      </tr>
+    </ng-template>
+
+  </p-table>
 </div>
