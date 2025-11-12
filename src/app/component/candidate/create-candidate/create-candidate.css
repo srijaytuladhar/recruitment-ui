@@ -20,10 +20,26 @@
   font-weight: 600;
 }
 
-.candidate-form {
+.form-container h2{
+  margin-bottom: 10px;
+}
+
+.candidate-form, .basic-form, .experience-entry {
   display: flex;
   flex-direction: column;
   gap: 20px;
+}
+
+.basic-form, .experience-entry{
+  gap: 15px;
+}
+
+button.p-button-danger,
+button.p-button-primary {
+  margin: 10px 0;
+  width: 180px; /* 👈 fixed width for consistency */
+  display: flex;
+  justify-content: center;
 }
 
 .form-row {
@@ -71,4 +87,8 @@ p-fileUpload {
 
 button.p-button-success {
   min-width: 140px;
+}
+
+.experience-entry{
+  gap: 20px;
 }

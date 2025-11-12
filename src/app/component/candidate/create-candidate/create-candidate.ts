@@ -1,19 +1,21 @@
 import { CommonModule } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
-import {Component, NgZone, OnInit} from '@angular/core';
-import { FormBuilder, FormGroup, FormsModule, Validators, ReactiveFormsModule } from '@angular/forms';
+import { Component, NgZone, OnInit } from '@angular/core';
+import { FormBuilder, FormGroup, FormsModule, Validators, ReactiveFormsModule, FormArray } from '@angular/forms';
 import { Router } from '@angular/router';
 
 // PrimeNG modules
 import { InputTextModule } from 'primeng/inputtext';
 import { ButtonModule } from 'primeng/button';
+import { FileUploadModule } from 'primeng/fileupload';
+import { ToastModule } from 'primeng/toast';
+import { CheckboxModule } from 'primeng/checkbox';
 
 // Services
 import { CandidateService } from '../../../services/candidate.service';
 import { UtilService } from '../../../services/util.service';
-import {MessageService} from 'primeng/api';
-import {FileUpload} from 'primeng/fileupload';
-import {ToastModule} from 'primeng/toast';
+import { MessageService } from 'primeng/api';
+import {DatePicker} from 'primeng/datepicker';
 
 @Component({
   selector: 'app-create-candidate',
@@ -25,8 +27,10 @@ import {ToastModule} from 'primeng/toast';
     HttpClientModule,
     InputTextModule,
     ButtonModule,
-    FileUpload,
-    ToastModule
+    FileUploadModule,
+    ToastModule,
+    CheckboxModule,
+    DatePicker
   ],
   templateUrl: './create-candidate.html',
   styleUrls: ['./create-candidate.css'],
@@ -54,7 +58,60 @@ export class CreateCandidate implements OnInit {
       jobVertical: ['', Validators.required],
       totalYearsOfExperience: ['', Validators.required],
       resumeBase64: ['', Validators.required],
+      education: this.fb.array([]),
+      experience: this.fb.array([])
     });
+  }
+
+  get education(): FormArray {
+    return this.candidateForm.get('education') as FormArray;
+  }
+
+  addEducation() {
+    const eduGroup = this.fb.group({
+      college: ['', Validators.required],
+      university: ['', Validators.required],
+      degree: ['', Validators.required],
+      major: [''],
+      gpa: [''],
+      completionDate: [null, Validators.required]
+    });
+    this.education.push(eduGroup);
+  }
+
+  removeEducation(index: number) {
+    this.education.removeAt(index);
+  }
+
+  get experience(): FormArray {
+    return this.candidateForm.get('experience') as FormArray;
+  }
+
+  addExperience() {
+    const expGroup = this.fb.group({
+      companyName: ['', Validators.required],
+      location: [''],
+      role: ['', Validators.required],
+      description: [''],
+      startDate: [null, Validators.required],
+      endDate: [null],
+      current: [false]
+    });
+
+    expGroup.get('current')?.valueChanges.subscribe(currentValue => {
+      if (currentValue) {
+        expGroup.get('endDate')?.disable();
+        expGroup.get('endDate')?.setValue(null);
+      } else {
+        expGroup.get('endDate')?.enable();
+      }
+    });
+
+    this.experience.push(expGroup);
+  }
+
+  removeExperience(index: number) {
+    this.experience.removeAt(index);
   }
 
   saveCandidate() {
@@ -72,9 +129,11 @@ export class CreateCandidate implements OnInit {
           } else {
             this.util.toastr(res.message || 'Candidate created successfully', false, 3000);
             this.candidateForm.reset();
-            setTimeout(() => {
-              this.goBack();
-            }, 3000);
+            this.education.clear();
+            this.experience.clear();
+            this.addEducation();
+            this.addExperience();
+            setTimeout(() => this.goBack(), 3000);
           }
         });
       },
@@ -94,7 +153,7 @@ export class CreateCandidate implements OnInit {
     const file = event.files[0];
     if (file) {
       const reader = new FileReader();
-      reader.readAsDataURL(file); // convert to Base64
+      reader.readAsDataURL(file);
       reader.onload = () => {
         this.candidateForm.patchValue({ resumeBase64: reader.result });
         this.util.toastr('File uploaded successfully!', false);

@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
-import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 
@@ -11,14 +11,15 @@ import { InputIconModule } from 'primeng/inputicon';
 import { IconFieldModule } from 'primeng/iconfield';
 import { ButtonModule } from 'primeng/button';
 import { TagModule } from 'primeng/tag';
+import { SplitButtonModule } from 'primeng/splitbutton';
+import { DialogModule } from 'primeng/dialog';
+import { SafePipe } from '../../config/safe.pipe'; // Needed for iframe | safe
 
 // Services
 import { CandidateService } from '../../services/candidate.service';
 import { UtilService } from '../../services/util.service';
 import { MessageService } from 'primeng/api';
 import {Tooltip} from 'primeng/tooltip';
-import { SplitButtonModule } from 'primeng/splitbutton';
-import { SpeedDial } from 'primeng/speeddial';
 
 @Component({
   selector: 'app-candidate',
@@ -35,57 +36,33 @@ import { SpeedDial } from 'primeng/speeddial';
     IconFieldModule,
     ButtonModule,
     TagModule,
-    Tooltip,
     SplitButtonModule,
-    SpeedDial
+    DialogModule,
+    SafePipe,
+    Tooltip
   ],
   providers: [CandidateService, UtilService, MessageService],
 })
 export class Candidate implements OnInit {
 
   candidateList: any[] = [];
-  items:any[] = [];
+  displayResumeModal = false;
+  resumeSrc: string = '';
+  resumeMimeType: string = '';
+
+  itemsTemplate = [
+    { label: 'Edit', icon: 'pi pi-refresh', command: (candidate: any) => console.log('Edit', candidate) },
+    { label: 'View', icon: 'pi pi-eye', command: (candidate: any) => this.router.navigate(['candidates/view', candidate.id]) },
+    { label: 'Proceed Further', icon: 'pi pi-forward', command: (candidate: any) => this.router.navigate(['candidates/proceed', candidate.id]) },
+    { label: 'Quit', icon: 'pi pi-power-off', command: () => window.open('https://angular.io/', '_blank') },
+  ];
+
   constructor(
     private router: Router,
     private service: CandidateService,
     private utilService: UtilService,
-    private cd: ChangeDetectorRef // inject ChangeDetectorRef
-  ) {
-     this.items = [
-            {
-                label: 'Edit',
-                icon: 'pi pi-refresh',
-                command: () => {
-                },
-            },
-            {
-                label: 'View',
-                icon: 'pi pi-times',
-                command: () => {
-                },
-            },
-
-            // {
-            //     separator: true,
-            // },
-            {
-                label: 'Proceed Further',
-                icon: 'pi pi-times',
-                command: () => {
-                },
-            },
-            // {
-            //     separator: true,
-            // },
-            {
-                label: 'Quit',
-                icon: 'pi pi-power-off',
-                command: () => {
-                    window.open('https://angular.io/', '_blank');
-                },
-            },
-        ];
-  }
+    private cd: ChangeDetectorRef
+  ) {}
 
   ngOnInit(): void {
     this.fetchAll();
@@ -95,12 +72,12 @@ export class Candidate implements OnInit {
     this.service.fetchAllCandidate().subscribe({
       next: (res) => {
         this.candidateList = res.data || [];
-        // Notify Angular that view should be updated
+        this.candidateList.forEach(candidate => {
+          candidate.items = this.itemsTemplate.map(item => ({ ...item, command: () => item.command(candidate) }));
+        });
         this.cd.detectChanges();
       },
-      error: (err) => {
-        this.utilService.toastr(err.error?.message || 'Failed to fetch candidates', true);
-      }
+      error: (err) => this.utilService.toastr(err.error?.message || 'Failed to fetch candidates', true)
     });
   }
 
@@ -108,8 +85,24 @@ export class Candidate implements OnInit {
     this.router.navigate([path]);
   }
 
-  navigateToView(email: string) {
-    this.router.navigate(['candidates/view', email]);
+  navigateToView(id: string) {
+    this.router.navigate(['candidates/view', id]);
   }
 
+  viewResume(candidate: any) {
+    if (!candidate?.resumeBase64) {
+      this.utilService.toastr('No resume available', true);
+      return;
+    }
+
+    if (candidate.resumeBase64.startsWith('data:')) {
+      this.resumeSrc = candidate.resumeBase64;
+      this.resumeMimeType = candidate.resumeBase64.split(';')[0].split(':')[1];
+    } else {
+      this.resumeSrc = `data:application/pdf;base64,${candidate.resumeBase64}`;
+      this.resumeMimeType = 'application/pdf';
+    }
+
+    this.displayResumeModal = true;
+  }
 }
