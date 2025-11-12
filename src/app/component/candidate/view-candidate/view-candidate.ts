@@ -1,4 +1,4 @@
-import {ChangeDetectorRef, Component, NgZone, OnInit} from '@angular/core';
+import { ChangeDetectorRef, Component, NgZone, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ButtonModule } from 'primeng/button';
 import { CommonModule } from '@angular/common';
@@ -11,6 +11,7 @@ import { UtilService } from '../../../services/util.service';
 import { CandidateService } from '../../../services/candidate.service';
 import { MessageService } from 'primeng/api';
 import { SafePipe } from '../../../config/safe.pipe';
+import { AccordionModule } from 'primeng/accordion';
 
 @Component({
   selector: 'app-view-candidate',
@@ -24,7 +25,8 @@ import { SafePipe } from '../../../config/safe.pipe';
     ButtonModule,
     ToastModule,
     DialogModule,
-    SafePipe
+    SafePipe,
+    AccordionModule
   ],
   providers: [CandidateService, UtilService, MessageService],
   templateUrl: './view-candidate.html',
@@ -35,6 +37,10 @@ export class ViewCandidate implements OnInit {
   displayResumeModal = false;
   resumeSrc: string = '';
   resumeMimeType: string = '';
+
+  showEducation = true;
+  showExperience = true;
+  showInformation = true;
 
   constructor(
     private route: ActivatedRoute,
@@ -53,7 +59,7 @@ export class ViewCandidate implements OnInit {
     const email = this.route.snapshot.paramMap.get('id');
     if (!email) return this.util.toastr('Invalid id', true);
 
-    this.service.fetchCandidateByEmail(email).subscribe({
+    this.service.fetchCandidateById(email).subscribe({
       next: (res: any) => {
         if (res.success) {
           this.candidate = res.data;
@@ -68,6 +74,7 @@ export class ViewCandidate implements OnInit {
             }
           }
 
+          // Trigger view update
           this.cd.detectChanges();
         } else {
           this.util.toastr(res.message || 'Candidate not found', true);
@@ -114,4 +121,21 @@ export class ViewCandidate implements OnInit {
     }
     this.displayResumeModal = true;
   }
+
+  toggleEducation() {
+    this.showEducation = !this.showEducation;
+  }
+
+  toggleExperience() {
+    this.showExperience = !this.showExperience;
+  }
+
+  togglePersonalInformation() {
+    this.showInformation = !this.showInformation;
+  }
+  navigateTo(id: string) {
+    this.router.navigate(['candidates/proceed', id]);
+  }
+
+
 }

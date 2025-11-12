@@ -15,11 +15,15 @@
 .p-table th,
 .p-table td {
   text-align: left;
-  white-space: nowrap;
+  padding: 0.5rem 1rem;
+}
+
+.truncate-text {
+  max-width: 180px;
   overflow: hidden;
   text-overflow: ellipsis;
-  padding: 0.5rem 1rem;
-  max-width: 200px;
+  white-space: nowrap;
+  display: block;
 }
 
 .tr-hover {
@@ -37,8 +41,7 @@
   height: 80px;
 }
 
-.p-component .p-splitbutton {
+button.resume-btn.p-disabled {
+  cursor: default !important;
+  opacity: 1 !important;
 }
-
-
-
