@@ -12,6 +12,8 @@ import { CandidateService } from '../../../services/candidate.service';
 import { MessageService } from 'primeng/api';
 import { SafePipe } from '../../../config/safe.pipe';
 import { AccordionModule } from 'primeng/accordion';
+import { Badge } from "primeng/badge";
+import {Tooltip} from 'primeng/tooltip';
 
 @Component({
   selector: 'app-view-candidate',
@@ -26,8 +28,10 @@ import { AccordionModule } from 'primeng/accordion';
     ToastModule,
     DialogModule,
     SafePipe,
-    AccordionModule
-  ],
+    AccordionModule,
+    Badge,
+    Tooltip
+],
   providers: [CandidateService, UtilService, MessageService],
   templateUrl: './view-candidate.html',
   styleUrls: ['./view-candidate.css']

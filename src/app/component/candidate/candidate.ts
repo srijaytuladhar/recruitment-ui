@@ -20,6 +20,7 @@ import { CandidateService } from '../../services/candidate.service';
 import { UtilService } from '../../services/util.service';
 import { MessageService } from 'primeng/api';
 import {Tooltip} from 'primeng/tooltip';
+import { Menu } from "primeng/menu";
 
 @Component({
   selector: 'app-candidate',
@@ -39,8 +40,9 @@ import {Tooltip} from 'primeng/tooltip';
     SplitButtonModule,
     DialogModule,
     SafePipe,
-    Tooltip
-  ],
+    Tooltip,
+    Menu
+],
   providers: [CandidateService, UtilService, MessageService],
 })
 export class Candidate implements OnInit {
@@ -67,6 +69,7 @@ export class Candidate implements OnInit {
   ngOnInit(): void {
     this.fetchAll();
   }
+
 
   fetchAll() {
     this.service.fetchAllCandidate().subscribe({

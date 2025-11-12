@@ -6,11 +6,13 @@
   </button>
   <div class="header flex align-items-center mb-4 justify-content-between">
     <div class="flex align-items-center">
-      <h2 class="ml-3">{{ candidate?.name || 'Candidate Details' }}</h2>
-      <span *ngIf="candidate" [ngClass]="{
+      <h2 class="ml-3">{{ candidate?.name || 'Candidate Details' }}</h2> 
+      <p-badge [value]="" severity="success" badgeSize="large" class="ml-2" *ngIf="candidate.status === 'ACTIVE'" pTooltip="Active User"/>
+      <p-badge [value]="" severity="danger" badgeSize="large" class="ml-2" *ngIf="candidate.status !== 'ACTIVE'" pTooltip="Inactive User"/>
+      <!-- <span *ngIf="candidate" [ngClass]="{
         'status-badge-active': candidate.status === 'ACTIVE',
         'status-badge-inactive': candidate.status !== 'ACTIVE'
-      }" style="font-size: 12px;">{{ candidate.status }}</span>
+      }" style="font-size: 12px;">{{ candidate.status }}</span> -->
     </div>
     <div class="resume-actions">
       <button pButton type="button" label="Download Resume" icon="pi pi-download" class="p-button-success" (click)="downloadResume()"></button>

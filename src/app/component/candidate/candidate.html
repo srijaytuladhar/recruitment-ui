@@ -47,7 +47,19 @@
       <ng-template pTemplate="body" let-candidate>
         <tr (click)="navigateToView(candidate.id)" class="tr-hover">
           <td (click)="$event.stopPropagation()">
-            <p-splitbutton label="" dropdownIcon="pi pi-cog" [model]="candidate.items"></p-splitbutton>
+            <button
+              pButton
+              type="button"
+              icon="pi pi-cog"
+              class="p-button-rounded p-button-text"
+              (click)="menu.toggle($event)"
+            ></button>
+            <p-menu
+              #menu
+              [popup]="true"
+              [model]="candidate.items"
+              appendTo="body"
+            ></p-menu>
           </td>
           <td><div class="truncate-text">{{ candidate.name }}</div></td>
           <td><div class="truncate-text">{{ candidate.emailAddress }}</div></td>
