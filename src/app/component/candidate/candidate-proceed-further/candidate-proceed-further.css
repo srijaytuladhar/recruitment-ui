@@ -1,0 +1,20 @@
+.container {
+  padding: 1rem 2rem;
+  animation: fadeSlide 0.3s ease-in;
+}
+
+.animated-stepper ::ng-deep .p-stepper-header.p-highlight {
+  background: #d0ebff;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+  box-shadow: 0 0 6px rgba(0, 132, 255, 0.3);
+}
+
+.animated-stepper ::ng-deep .p-stepper-header:not(.p-highlight) {
+  opacity: 0.8;
+}
+
+@keyframes fadeSlide {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
