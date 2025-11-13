@@ -16,9 +16,10 @@ import { UtilService } from '../../../services/util.service';
 
 interface CandidateProcess {
   id?: string;
+  candidateId?: string;
   resumeSource?: string;
   detailEntryNotes?: string;
-  interviewMode?: string;
+  interviewMode?: any;
   interviewDate?: Date;
   interviewName?: string;
   interviewFor?: string;
@@ -112,7 +113,14 @@ export class CandidateProceedFurtherComponent implements OnInit {
 
     this.process.currentStep = nextStep;
     this.process.status = 'IN_PROGRESS';
+    this.process.candidateId = this.candidateId;
+    
+    if (this.process.interviewMode) {
 
+    console.log(this.process.interviewMode);
+    console.log(this.process.interviewMode.value)
+      this.process.interviewMode = this.process.interviewMode.value;
+    }
     const request$ = this.process.id
       ? this.service.updateCandidateProcess(this.process.id, this.process)
       : this.service.createCandidateProcess(this.process);
