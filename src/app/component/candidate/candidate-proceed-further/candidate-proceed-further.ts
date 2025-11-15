@@ -13,6 +13,10 @@ import { animate, state, style, transition, trigger } from '@angular/animations'
 
 import { CandidateService } from '../../../services/candidate.service';
 import { UtilService } from '../../../services/util.service';
+import {NgIf} from '@angular/common';
+import {Badge} from 'primeng/badge';
+import {Tooltip} from 'primeng/tooltip';
+import {Textarea} from 'primeng/textarea';
 
 interface CandidateProcess {
   id?: string;
@@ -53,7 +57,11 @@ interface CandidateProcess {
     DatePickerModule,
     SelectModule,
     HttpClientModule,
-    ToastModule
+    ToastModule,
+    NgIf,
+    Badge,
+    Tooltip,
+    Textarea
   ],
   templateUrl: './candidate-proceed-further.html',
   styleUrls: ['./candidate-proceed-further.css'],
@@ -90,7 +98,12 @@ export class CandidateProceedFurtherComponent implements OnInit {
       this.service.getByCandidateProcessById(this.candidateId).subscribe({
         next: res => {
           this.process = res.data || {};
-          this.currentStep = this.process.currentStep || 1;
+          this.convertDatesToObjects();
+          if (this.process.status === 'COMPLETED') {
+            this.currentStep = 7;
+          } else {
+            this.currentStep = this.process.currentStep || 1;
+          }
         },
         error: () => this.util.toastr('Failed to fetch candidate process', true)
       });
@@ -107,14 +120,14 @@ export class CandidateProceedFurtherComponent implements OnInit {
 
   saveAndNext(activateCallback: any, nextStep: number) {
     if (!this.isStepValid(this.currentStep)) {
-      this.util.toastr('Please fill all required fields in this step', true);
+      this.util.toastr('Please complete all required fields.', true);
       return;
     }
 
     this.process.currentStep = nextStep;
     this.process.status = 'IN_PROGRESS';
     this.process.candidateId = this.candidateId;
-    
+
     if (this.process.interviewMode) {
 
     console.log(this.process.interviewMode);
@@ -169,5 +182,25 @@ export class CandidateProceedFurtherComponent implements OnInit {
       case 7: return !!this.process.clientSelectionOfferDate && !!this.process.offerAmount && !!this.process.offerStartDate;
       default: return true;
     }
+  }
+
+  private convertDatesToObjects() {
+    const dateFields: (keyof CandidateProcess)[] = [
+      'interviewDate',
+      'profileForwardedDate',
+      'followUp1Date',
+      'followUp2Date',
+      'followUp3Date',
+      'clientInterviewDate',
+      'clientSelectionOfferDate',
+      'offerStartDate'
+    ];
+
+    dateFields.forEach(field => {
+      const value = this.process[field];
+      if (value && typeof value === 'string') {
+        this.process[field] = new Date(value);
+      }
+    });
   }
 }
