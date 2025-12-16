@@ -58,4 +58,8 @@ export class CandidateService {
   createCandidateProcess(process: CandidateProcess) {
     return this.http.post<any>(`${this.baseUrl}/process`, process);
   }
+
+  fetchDropdown() {
+    return this.http.get<any[]>(PathConfig.API_ENDPOINT +`dropdown/fetchJobList`);
+  }
 }
