@@ -6,16 +6,28 @@
     </p-button>
   </div>
 
-  <div class="mb-3" style="max-width: 300px;">
-    <p-iconfield>
-      <p-inputicon class="pi pi-search"></p-inputicon>
-      <input
-        type="text"
-        pInputText
-        placeholder="Search candidates"
-        (input)="dt1.filterGlobal($event.target.value, 'contains')"
-      />
-    </p-iconfield>
+  <div class="mb-3" style="max-width: 500px;">
+    <div class="flex gap-2">
+      <p-iconfield style="flex: 1;">
+        <p-inputicon class="pi pi-search"></p-inputicon>
+        <input
+          type="text"
+          pInputText
+          placeholder="Search candidates"
+          (input)="dt1.filterGlobal($event.target.value, 'contains')"
+        />
+      </p-iconfield>
+
+      <p-select
+        [options]="workStatus"
+        optionLabel="label"
+        optionValue="value"
+        placeholder="Work Status"
+        style="flex: 1; min-width: 0;"
+        [(ngModel)]="selectedWorkStatus"
+      (onChange)="dt1.filter($event.value, 'workStatus', 'equals')"
+      ></p-select>
+    </div>
   </div>
 
   <div class="table-responsive">
@@ -33,12 +45,27 @@
       <ng-template pTemplate="header">
         <tr>
           <th>Action</th>
-          <th pSortableColumn="name">Name <p-sortIcon field="name"></p-sortIcon></th>
-          <th pSortableColumn="emailAddress">Email <p-sortIcon field="emailAddress"></p-sortIcon></th>
-          <th pSortableColumn="contactNumber">Contact <p-sortIcon field="contactNumber"></p-sortIcon></th>
-          <th pSortableColumn="jobLocationDesired">Location <p-sortIcon field="jobLocationDesired"></p-sortIcon></th>
-          <th pSortableColumn="jobVertical">Vertical <p-sortIcon field="jobVertical"></p-sortIcon></th>
-          <th pSortableColumn="totalYearsOfExperience">Experience <p-sortIcon field="totalYearsOfExperience"></p-sortIcon></th>
+          <th pSortableColumn="name">Name
+            <p-sortIcon field="name"></p-sortIcon>
+          </th>
+          <th pSortableColumn="emailAddress">Email
+            <p-sortIcon field="emailAddress"></p-sortIcon>
+          </th>
+          <th pSortableColumn="contactNumber">Contact
+            <p-sortIcon field="contactNumber"></p-sortIcon>
+          </th>
+          <th pSortableColumn="jobLocationDesired">Location
+            <p-sortIcon field="jobLocationDesired"></p-sortIcon>
+          </th>
+          <th pSortableColumn="jobVertical">Vertical
+            <p-sortIcon field="jobVertical"></p-sortIcon>
+          </th>
+          <th pSortableColumn="totalYearsOfExperience">Experience
+            <p-sortIcon field="totalYearsOfExperience"></p-sortIcon>
+          </th>
+          <th pSortableColumn="workStatus">Work Status
+            <p-sortIcon field="workStatus"></p-sortIcon>
+          </th>
           <th>Resume</th> <!-- New Resume Column -->
         </tr>
       </ng-template>
@@ -61,12 +88,31 @@
               appendTo="body"
             ></p-menu>
           </td>
-          <td><div class="truncate-text">{{ candidate.name }}</div></td>
-          <td><div class="truncate-text">{{ candidate.emailAddress }}</div></td>
-          <td><div class="truncate-text">{{ candidate.contactNumber }}</div></td>
-          <td><div class="truncate-text">{{ candidate.jobLocationDesired }}</div></td>
-          <td><div class="truncate-text">{{ candidate.jobVertical }}</div></td>
-          <td><div class="truncate-text">{{ candidate.totalYearsOfExperience }}</div></td>
+          <td>
+            <div class="truncate-text">{{ candidate.name }}</div>
+          </td>
+          <td>
+            <div class="truncate-text">{{ candidate.emailAddress }}</div>
+          </td>
+          <td>
+            <div class="truncate-text">{{ candidate.contactNumber }}</div>
+          </td>
+          <td>
+            <div class="truncate-text">{{ candidate.jobLocationDesired }}</div>
+          </td>
+          <td>
+            <div class="truncate-text">{{ candidate.jobVertical }}</div>
+          </td>
+          <td>
+            <div class="truncate-text">{{ candidate.totalYearsOfExperience }}</div>
+          </td>
+          <td>
+            <span
+              class="status-badge"
+              [ngClass]="getWorkStatusClass(candidate.workStatus)">
+              {{ candidate.workStatus ? getWorkStatusLabel(candidate.workStatus) : 'N/A' }}
+            </span>
+          </td>
           <td (click)="$event.stopPropagation()">
             <button
               pButton
@@ -112,6 +158,6 @@
       *ngIf="resumeMimeType.startsWith('image/')"
       [src]="resumeSrc"
       width="100%"
-      style="height:100%; object-fit:contain; display:block; margin:auto;" />
+      style="height:100%; object-fit:contain; display:block; margin:auto;"/>
   </ng-container>
 </p-dialog>

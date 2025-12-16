@@ -43,7 +43,17 @@
         </div>
         <div class="form-group">
           <label>Job Vertical</label>
-          <input pInputText type="text" formControlName="jobVertical" placeholder="Eg: IT, Finance, Marketing"/>
+          <p-select
+            formControlName="jobVertical"
+            [options]="jobVertical"
+            optionLabel="label"
+            optionValue="value"
+            placeholder="Select Job Vertical"
+            [filter]="true"
+            filterBy="label"
+            showClear="true"
+            class="w-full">
+          </p-select>
         </div>
       </div>
 
@@ -52,7 +62,20 @@
           <label>Total Experience (Years)</label>
           <input pInputText type="number" formControlName="totalYearsOfExperience" placeholder="Years of experience"/>
         </div>
-        <div class="form-group"></div>
+        <div class="form-group">
+          <label>Work Status</label>
+          <p-select
+            formControlName="workStatus"
+            [options]="workStatus"
+            optionLabel="label"
+            optionValue="value"
+            placeholder="Select Work Status"
+            [filter]="true"
+            filterBy="label"
+            showClear="true"
+            class="w-full">
+          </p-select>
+        </div>
       </div>
 
     </div>

@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
 import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
-import { FormsModule } from '@angular/forms';
+import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import { Router } from '@angular/router';
 
 // PrimeNG modules
@@ -21,6 +21,7 @@ import { UtilService } from '../../services/util.service';
 import { MessageService } from 'primeng/api';
 import {Tooltip} from 'primeng/tooltip';
 import { Menu } from "primeng/menu";
+import {Select} from 'primeng/select';
 
 @Component({
   selector: 'app-candidate',
@@ -41,8 +42,10 @@ import { Menu } from "primeng/menu";
     DialogModule,
     SafePipe,
     Tooltip,
-    Menu
-],
+    Menu,
+    Select,
+    ReactiveFormsModule
+  ],
   providers: [CandidateService, UtilService, MessageService],
 })
 export class Candidate implements OnInit {
@@ -52,10 +55,18 @@ export class Candidate implements OnInit {
   resumeSrc: string = '';
   resumeMimeType: string = '';
 
+  selectedWorkStatus: string = '';
+  workStatus: { label: string; value: string }[] = [
+    { label: 'All', value: '' },
+    { label: 'Open to Work', value: 'OPEN_TO_WORK' },
+    { label: 'Working', value: 'WORKING' },
+    { label: 'Not Looking', value: 'NOT_LOOKING' }
+  ];
+
   itemsTemplate = [
     { label: 'Edit', icon: 'pi pi-refresh', command: (candidate: any) => console.log('Edit', candidate) },
     { label: 'View', icon: 'pi pi-eye', command: (candidate: any) => this.router.navigate(['candidates/view', candidate.id]) },
-    { label: 'Proceed Further', icon: 'pi pi-forward', command: (candidate: any) => this.router.navigate(['candidates/proceed', candidate.id]) },
+    // { label: 'Proceed Further', icon: 'pi pi-forward', command: (candidate: any) => this.router.navigate(['candidates/proceed', candidate.id]) },
     { label: 'Quit', icon: 'pi pi-power-off', command: () => window.open('https://angular.io/', '_blank') },
   ];
 
@@ -107,5 +118,27 @@ export class Candidate implements OnInit {
     }
 
     this.displayResumeModal = true;
+  }
+
+  getWorkStatusClass(status: string): string {
+    switch (status) {
+      case 'OPEN_TO_WORK':
+        return 'badge-open';
+      case 'WORKING':
+        return 'badge-working';
+      case 'NOT_LOOKING':
+        return 'badge-not-looking';
+      default:
+        return 'badge-default';
+    }
+  }
+
+  getWorkStatusLabel(value: string): string {
+    const map: Record<string, string> = {
+      OPEN_TO_WORK: 'Open to Work',
+      WORKING: 'Working',
+      NOT_LOOKING: 'Not Looking'
+    };
+    return map[value] || 'N/A';
   }
 }
