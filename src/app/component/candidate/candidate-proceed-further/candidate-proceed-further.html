@@ -1,8 +1,19 @@
 <p-toast></p-toast>
 
 <div class="container" [@fadeInOut]>
-  <div class="header flex justify-content-between align-items-center mb-3">
-    <h2>Proceed Further</h2>
+  <div class="header mb-2">
+    <div class="flex align-items-center gap-3 mb-2">
+      <h2 class="m-0">
+        Proceed Further
+      </h2>
+      <p-badge
+        *ngIf="process?.status === 'COMPLETED'"
+        severity="success"
+        badgeSize="large"
+        pTooltip="Process Completed">
+      </p-badge>
+    </div>
+
     <p-button
       label="Back"
       icon="pi pi-arrow-left"
@@ -17,19 +28,31 @@
       <p-step-panel>
         <ng-template #content let-activateCallback="activateCallback">
           <div [@fadeInOut]>
-            <label>Resume / Portfolio Source</label>
-            <input
-              pInputText
-              type="text"
-              [(ngModel)]="process.resumeSource"
-              placeholder="Enter Resume / Portfolio source"
-              class="w-full md:w-96"
-            />
-            <div class="py-6">
-              <p-button
-                label="Next"
-                (click)="saveAndNext(activateCallback, 2)"
-              ></p-button>
+            <div class="p-5 border border-gray-200 rounded-lg shadow-sm bg-white">
+              <div class="form-row mb-2">
+                <label class="block font-semibold mb-3">
+                  Resume / Portfolio Source <span class="text-red-500">*</span>
+                </label>
+                <input
+                  pInputText
+                  type="text"
+                  [(ngModel)]="process.resumeSource"
+                  placeholder="e.g., LinkedIn, GitHub, personal website"
+                  class="w-full md:w-96 p-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-400"
+                />
+                <small class="text-gray-500 mt-1 block">
+                  Please enter the URL or source where the candidate's resume or portfolio can be accessed.
+                </small>
+              </div>
+
+              <div class="form-row mt-3 flex justify-end">
+                <p-button
+                  label="Next"
+                  icon="pi pi-arrow-right"
+                  class="p-button-success"
+                  (click)="saveAndNext(activateCallback, 2)"
+                ></p-button>
+              </div>
             </div>
           </div>
         </ng-template>
@@ -41,24 +64,37 @@
       <p-step-panel>
         <ng-template #content let-activateCallback="activateCallback">
           <div [@fadeInOut]>
-            <label>Candidate Details</label>
-            <input
-              pInputText
-              type="text"
-              [(ngModel)]="process.detailEntryNotes"
-              placeholder="Enter candidate details"
-              class="w-full md:w-96"
-            />
-            <div class="flex py-6 gap-2">
-              <p-button
-                label="Back"
-                severity="secondary"
-                (click)="activateCallback(1)"
-              ></p-button>
-              <p-button
-                label="Next"
-                (click)="saveAndNext(activateCallback, 3)"
-              ></p-button>
+            <div class="p-5 border border-gray-200 rounded-lg shadow-sm bg-white">
+              <div class="form-row mb-2">
+                <label class="block font-semibold mb-3">
+                  Candidate Details <span class="text-red-500">*</span>
+                </label>
+                <textarea
+                  pInputTextarea
+                  [(ngModel)]="process.detailEntryNotes"
+                  placeholder="Enter candidate details"
+                  rows="4"
+                  class="w-full md:w-96 p-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-400"
+                ></textarea>
+                <small class="text-gray-500 mt-1 block">
+                  Please provide relevant notes or details about the candidate.
+                </small>
+              </div>
+
+              <div class="form-row mt-3 flex justify-between md:justify-end gap-2">
+                <p-button
+                  label="Back"
+                  severity="secondary"
+                  icon="pi pi-arrow-left"
+                  (click)="activateCallback(1)"
+                ></p-button>
+                <p-button
+                  label="Next"
+                  icon="pi pi-arrow-right"
+                  class="p-button-success"
+                  (click)="saveAndNext(activateCallback, 3)"
+                ></p-button>
+              </div>
             </div>
           </div>
         </ng-template>
@@ -70,32 +106,51 @@
       <p-step-panel>
         <ng-template #content let-activateCallback="activateCallback">
           <div [@fadeInOut]>
-            <label>Interview Mode</label>
-            <p-select
-              [options]="interviewModes"
-              [(ngModel)]="process.interviewMode"
-              optionLabel="label"
-              placeholder="Select Mode"
-              class="w-full md:w-96"
-            ></p-select>
+            <div class="p-5 border border-gray-200 rounded-lg shadow-sm bg-white">
+              <div class="form-row mb-4">
+                <label class="block font-semibold mb-2">
+                  Interview Mode <span class="text-red-500">*</span>
+                </label>
+                <p-select
+                  [options]="interviewModes"
+                  [(ngModel)]="process.interviewMode"
+                  optionLabel="label"
+                  placeholder="Select Mode"
+                  class="w-full md:w-96"
+                ></p-select>
+                <small class="text-gray-500 mt-1 block">
+                  Choose whether the interview is Virtual or In Person.
+                </small>
+              </div>
 
-            <label class="mt-2">Interview Date</label>
-            <p-datepicker
-              [(ngModel)]="process.interviewDate"
-              [showIcon]="true"
-              [showOnFocus]="false"
-            ></p-datepicker>
+              <div class="form-row mb-4">
+                <label class="block font-semibold mb-2">
+                  Interview Date <span class="text-red-500">*</span>
+                </label>
+                <p-datepicker
+                  [(ngModel)]="process.interviewDate"
+                  [showIcon]="true"
+                  [showOnFocus]="false"
+                ></p-datepicker>
+                <small class="text-gray-500 mt-1 block">
+                  Select the scheduled date for the interview.
+                </small>
+              </div>
 
-            <div class="flex py-6 gap-2">
-              <p-button
-                label="Back"
-                severity="secondary"
-                (click)="activateCallback(2)"
-              ></p-button>
-              <p-button
-                label="Next"
-                (click)="saveAndNext(activateCallback, 4)"
-              ></p-button>
+              <div class="form-row mt-4 flex justify-between md:justify-end gap-2">
+                <p-button
+                  label="Back"
+                  severity="secondary"
+                  icon="pi pi-arrow-left"
+                  (click)="activateCallback(2)"
+                ></p-button>
+                <p-button
+                  label="Next"
+                  icon="pi pi-arrow-right"
+                  class="p-button-success"
+                  (click)="saveAndNext(activateCallback, 4)"
+                ></p-button>
+              </div>
             </div>
           </div>
         </ng-template>
@@ -107,48 +162,75 @@
       <p-step-panel>
         <ng-template #content let-activateCallback="activateCallback">
           <div [@fadeInOut]>
-            <label>Interview Name</label>
-            <input
-              pInputText
-              type="text"
-              [(ngModel)]="process.interviewName"
-              class="w-full md:w-96"
-            />
+            <div class="p-5 border border-gray-200 rounded-lg shadow-sm bg-white">
+              <div class="form-row mb-4">
+                <label class="block font-semibold mb-2">
+                  Interview Name <span class="text-red-500">*</span>
+                </label>
+                <input
+                  pInputText
+                  type="text"
+                  [(ngModel)]="process.interviewName"
+                  placeholder="Enter interview name"
+                  class="w-full md:w-96 p-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-400"
+                />
+                <small class="text-gray-500 mt-1 block">
+                  Name of the interview session.
+                </small>
+              </div>
 
-            <label class="mt-2">Interview For</label>
-            <input
-              pInputText
-              type="text"
-              [(ngModel)]="process.interviewFor"
-              class="w-full md:w-96"
-            />
+              <div class="form-row mb-4">
+                <label class="block font-semibold mb-2">
+                  Interview For <span class="text-red-500">*</span>
+                </label>
+                <input
+                  pInputText
+                  type="text"
+                  [(ngModel)]="process.interviewFor"
+                  placeholder="Position or role"
+                  class="w-full md:w-96 p-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-400"
+                />
+                <small class="text-gray-500 mt-1 block">
+                  Specify the position or role the interview is conducted for.
+                </small>
+              </div>
 
-            <label class="mt-2">Remarks</label>
-            <input
-              pInputText
-              type="text"
-              [(ngModel)]="process.interviewRemarks"
-              class="w-full md:w-96"
-            />
+              <div class="form-row mb-4">
+                <label class="block font-semibold mb-2">Remarks</label>
+                <textarea
+                  pInputTextarea
+                  [(ngModel)]="process.interviewRemarks"
+                  rows="3"
+                  placeholder="Any remarks about the interview"
+                  class="w-full md:w-96 p-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-400"
+                ></textarea>
+              </div>
 
-            <label class="mt-2">Profile Assessment</label>
-            <input
-              pInputText
-              type="text"
-              [(ngModel)]="process.profileAssessment"
-              class="w-full md:w-96"
-            />
+              <div class="form-row mb-4">
+                <label class="block font-semibold mb-2">Profile Assessment</label>
+                <textarea
+                  pInputTextarea
+                  [(ngModel)]="process.profileAssessment"
+                  rows="3"
+                  placeholder="Assessment notes about candidate's profile"
+                  class="w-full md:w-96 p-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-400"
+                ></textarea>
+              </div>
 
-            <div class="flex py-6 gap-2">
-              <p-button
-                label="Back"
-                severity="secondary"
-                (click)="activateCallback(3)"
-              ></p-button>
-              <p-button
-                label="Next"
-                (click)="saveAndNext(activateCallback, 5)"
-              ></p-button>
+              <div class="form-row mt-4 flex justify-between md:justify-end gap-2">
+                <p-button
+                  label="Back"
+                  severity="secondary"
+                  icon="pi pi-arrow-left"
+                  (click)="activateCallback(3)"
+                ></p-button>
+                <p-button
+                  label="Next"
+                  icon="pi pi-arrow-right"
+                  class="p-button-success"
+                  (click)="saveAndNext(activateCallback, 5)"
+                ></p-button>
+              </div>
             </div>
           </div>
         </ng-template>
@@ -160,45 +242,64 @@
       <p-step-panel>
         <ng-template #content let-activateCallback="activateCallback">
           <div [@fadeInOut]>
-            <label>Profile Forwarded Date</label>
-            <p-datepicker
-              [(ngModel)]="process.profileForwardedDate"
-              [showIcon]="true"
-              [showOnFocus]="false"
-            ></p-datepicker>
+            <div class="p-5 border border-gray-200 rounded-lg shadow-sm bg-white">
+              <div class="form-row mb-4">
+                <label class="block font-semibold mb-2">
+                  Profile Forwarded Date <span class="text-red-500">*</span>
+                </label>
+                <p-datepicker
+                  [(ngModel)]="process.profileForwardedDate"
+                  [showIcon]="true"
+                  [showOnFocus]="false"
+                ></p-datepicker>
+                <small class="text-gray-500 mt-1 block">
+                  Select the date when the candidate's profile was forwarded to the client.
+                </small>
+              </div>
 
-            <label class="mt-2">Follow Up 1</label>
-            <p-datepicker
-              [(ngModel)]="process.followUp1Date"
-              [showIcon]="true"
-              [showOnFocus]="false"
-            ></p-datepicker>
+              <div class="form-row mb-4">
+                <label class="block font-semibold mb-2">Follow Up 1</label>
+                <p-datepicker
+                  [(ngModel)]="process.followUp1Date"
+                  [showIcon]="true"
+                  [showOnFocus]="false"
+                ></p-datepicker>
+              </div>
 
-            <label class="mt-2">Follow Up 2</label>
-            <p-datepicker
-              [(ngModel)]="process.followUp2Date"
-              [showIcon]="true"
-              [showOnFocus]="false"
-            ></p-datepicker>
+              <div class="form-row mb-4">
+                <label class="block font-semibold mb-2">Follow Up 2</label>
+                <p-datepicker
+                  [(ngModel)]="process.followUp2Date"
+                  [showIcon]="true"
+                  [showOnFocus]="false"
+                ></p-datepicker>
+              </div>
 
-            <label class="mt-2">Follow Up 3</label>
-            <p-datepicker
-              [(ngModel)]="process.followUp3Date"
-              [showIcon]="true"
-              [showOnFocus]="false"
-            ></p-datepicker>
+              <div class="form-row mb-4">
+                <label class="block font-semibold mb-2">Follow Up 3</label>
+                <p-datepicker
+                  [(ngModel)]="process.followUp3Date"
+                  [showIcon]="true"
+                  [showOnFocus]="false"
+                ></p-datepicker>
+              </div>
 
-            <div class="flex py-6 gap-2">
-              <p-button
-                label="Back"
-                severity="secondary"
-                (click)="activateCallback(4)"
-              ></p-button>
-              <p-button
-                label="Next"
-                (click)="saveAndNext(activateCallback, 6)"
-              ></p-button>
+              <div class="form-row mt-4 flex justify-between md:justify-end gap-2">
+                <p-button
+                  label="Back"
+                  severity="secondary"
+                  icon="pi pi-arrow-left"
+                  (click)="activateCallback(4)"
+                ></p-button>
+                <p-button
+                  label="Next"
+                  icon="pi pi-arrow-right"
+                  class="p-button-success"
+                  (click)="saveAndNext(activateCallback, 6)"
+                ></p-button>
+              </div>
             </div>
+
           </div>
         </ng-template>
       </p-step-panel>
@@ -209,39 +310,57 @@
       <p-step-panel>
         <ng-template #content let-activateCallback="activateCallback">
           <div [@fadeInOut]>
-            <label>Client Interview Date</label>
-            <p-datepicker
-              [(ngModel)]="process.clientInterviewDate"
-              [showIcon]="true"
-              [showOnFocus]="false"
-            ></p-datepicker>
-
-            <label class="mt-2">Interview Rounds</label>
-            <input
-              pInputText
-              type="number"
-              [(ngModel)]="process.clientInterviewRounds"
-              class="w-full md:w-96"
-            />
-
-            <label class="mt-2">Assessment</label>
-            <input
-              pInputText
-              type="text"
-              [(ngModel)]="process.clientInterviewAssessment"
-              class="w-full md:w-96"
-            />
-
-            <div class="flex py-6 gap-2">
-              <p-button
-                label="Back"
-                severity="secondary"
-                (click)="activateCallback(5)"
-              ></p-button>
-              <p-button
-                label="Next"
-                (click)="saveAndNext(activateCallback, 7)"
-              ></p-button>
+            <div class="p-5 border border-gray-200 rounded-lg shadow-sm bg-white">
+              <!-- Client Interview Date -->
+              <div class="form-row mb-4">
+                <label class="block font-semibold mb-2">
+                  Client Interview Date <span class="text-red-500">*</span>
+                </label>
+                <p-datepicker
+                  [(ngModel)]="process.clientInterviewDate"
+                  [showIcon]="true"
+                  [showOnFocus]="false"
+                ></p-datepicker>
+                <small class="text-gray-500 mt-1 block">
+                  Select the date scheduled for the client interview.
+                </small>
+              </div>
+              <div class="form-row mb-4">
+                <label class="block font-semibold mb-2">
+                  Interview Rounds <span class="text-red-500">*</span>
+                </label>
+                <input
+                  pInputText
+                  type="number"
+                  [(ngModel)]="process.clientInterviewRounds"
+                  placeholder="Enter number of rounds"
+                  class="w-full md:w-96 p-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-400"
+                />
+              </div>
+              <div class="form-row mb-4">
+                <label class="block font-semibold mb-2">Assessment</label>
+                <textarea
+                  pInputTextarea
+                  [(ngModel)]="process.clientInterviewAssessment"
+                  rows="3"
+                  placeholder="Assessment notes from client interview"
+                  class="w-full md:w-96 p-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-400"
+                ></textarea>
+              </div>
+              <div class="form-row mt-4 flex justify-between md:justify-end gap-2">
+                <p-button
+                  label="Back"
+                  severity="secondary"
+                  icon="pi pi-arrow-left"
+                  (click)="activateCallback(5)"
+                ></p-button>
+                <p-button
+                  label="Next"
+                  icon="pi pi-arrow-right"
+                  class="p-button-success"
+                  (click)="saveAndNext(activateCallback, 7)"
+                ></p-button>
+              </div>
             </div>
           </div>
         </ng-template>
@@ -253,39 +372,63 @@
       <p-step-panel>
         <ng-template #content let-activateCallback="activateCallback">
           <div [@fadeInOut]>
-            <label>Offer Date</label>
-            <p-datepicker
-              [(ngModel)]="process.clientSelectionOfferDate"
-              [showIcon]="true"
-              [showOnFocus]="false"
-            ></p-datepicker>
+            <div class="p-5 border border-gray-200 rounded-lg shadow-sm bg-white">
+              <!-- Offer Date -->
+              <div class="form-row mb-4">
+                <label class="block font-semibold mb-2">
+                  Offer Date <span class="text-red-500">*</span>
+                </label>
+                <p-datepicker
+                  [(ngModel)]="process.clientSelectionOfferDate"
+                  [showIcon]="true"
+                  [showOnFocus]="false"
+                ></p-datepicker>
+                <small class="text-gray-500 mt-1 block">
+                  Select the date when the offer was made to the candidate.
+                </small>
+              </div>
 
-            <label class="mt-2">Offer Amount</label>
-            <input
-              pInputText
-              type="number"
-              [(ngModel)]="process.offerAmount"
-              class="w-full md:w-96"
-            />
+              <div class="form-row mb-4">
+                <label class="block font-semibold mb-2">
+                  Offer Amount <span class="text-red-500">*</span>
+                </label>
+                <input
+                  pInputText
+                  type="number"
+                  [(ngModel)]="process.offerAmount"
+                  placeholder="Enter the offered amount"
+                  class="w-full md:w-96 p-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-400"
+                />
+              </div>
 
-            <label class="mt-2">Start Date</label>
-            <p-datepicker
-              [(ngModel)]="process.offerStartDate"
-              [showIcon]="true"
-              [showOnFocus]="false"
-            ></p-datepicker>
+              <div class="form-row mb-4">
+                <label class="block font-semibold mb-2">
+                  Start Date <span class="text-red-500">*</span>
+                </label>
+                <p-datepicker
+                  [(ngModel)]="process.offerStartDate"
+                  [showIcon]="true"
+                  [showOnFocus]="false"
+                ></p-datepicker>
+                <small class="text-gray-500 mt-1 block">
+                  Select the candidate's joining date.
+                </small>
+              </div>
 
-            <div class="flex py-6 gap-2">
-              <p-button
-                label="Back"
-                severity="secondary"
-                (click)="activateCallback(6)"
-              ></p-button>
-              <p-button
-                label="Finish"
-                severity="success"
-                (click)="finish()"
-              ></p-button>
+              <div class="form-row mt-4 flex justify-between md:justify-end gap-2">
+                <p-button
+                  label="Back"
+                  severity="secondary"
+                  icon="pi pi-arrow-left"
+                  (click)="activateCallback(6)"
+                ></p-button>
+                <p-button
+                  label="Finish"
+                  icon="pi pi-check"
+                  class="p-button-success"
+                  (click)="finish()"
+                ></p-button>
+              </div>
             </div>
           </div>
         </ng-template>
