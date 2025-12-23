@@ -1,4 +1,9 @@
-<div class="layout-wrapper">
+<div *ngIf="isLogin">
+  <input type="text" placeholder="username"/>
+  <input type="password" placeholder="password"/>
+  <button (click)="toggleLogin()">Login</button>
+</div>
+<div class="layout-wrapper" *ngIf="!isLogin">
   <!-- Sidebar -->
   <aside class="sidebar" [class.collapsed]="collapsed">
     <div class="sidebar-header">
@@ -34,7 +39,7 @@
     </ul>
 
     <div class="logout">
-      <button pButton icon="pi pi-sign-out" label="Logout" class="p-button-danger"></button>
+      <button pButton icon="pi pi-sign-out" label="Logout" class="p-button-danger" (click)="logout()"></button>
     </div>
   </aside>
 

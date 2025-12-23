@@ -30,10 +30,26 @@ export class App {
   protected readonly title = signal('hr-recruiter-ui');
   sidebarVisible = true;
   menuItems: MenuItem[] = [];
-
+  isLogin = true;
   constructor(
     private router: Router
   ) {
+    let login = localStorage.getItem('login');
+    if (login === 'true') {
+      this.isLogin = true;
+    } else {
+      this.isLogin = false;
+    }
+  }
+
+  toggleLogin() {
+    this.isLogin = !this.isLogin;
+    localStorage.setItem('login', '' + this.isLogin);
+  }
+
+  logout() {
+    this.isLogin = true;
+    localStorage.setItem('login', 'true');
 
   }
 
