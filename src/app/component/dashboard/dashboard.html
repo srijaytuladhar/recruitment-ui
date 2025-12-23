@@ -1,1 +1,37 @@
-<p>dashboard works!</p>
+<p-panel header="Dashboard Overview">
+  <div class="grid">
+    <div class="col-12 md:col-3" *ngFor="let card of summaryCards">
+      <p-card class="summary-card" [styleClass]="card.color">
+        <div class="flex justify-content-between align-items-center">
+          <div>
+            <h3>{{ card.title }}</h3>
+            <h2>{{ card.value }}</h2>
+          </div>
+          <i class="{{ card.icon }} text-4xl"></i>
+        </div>
+      </p-card>
+    </div>
+  </div>
+
+  <div class="grid mt-3">
+    <div class="col-12 md:col-6">
+      <p-card header="Candidate Employment">
+        <p-chart type="line" [data]="lineData"></p-chart>
+      </p-card>
+    </div>
+
+    <div class="col-12 md:col-6">
+      <p-card header="Client Job Placements">
+        <p-chart type="bar" [data]="barData"></p-chart>
+      </p-card>
+    </div>
+  </div>
+
+  <div class="grid mt-3">
+    <div class="col-12 md:col-4">
+      <p-card header="Candidate Status">
+        <p-chart type="pie" [data]="pieData"></p-chart>
+      </p-card>
+    </div>
+  </div>
+</p-panel>

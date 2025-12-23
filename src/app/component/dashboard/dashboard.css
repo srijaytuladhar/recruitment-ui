@@ -1,0 +1,42 @@
+/* Dashboard Summary Cards */
+
+.summary-card {
+  color: #ffffff;
+  border-radius: 12px;
+  padding: 1.25rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+}
+
+.summary-card h3 {
+  margin: 0;
+  font-size: 0.9rem;
+  font-weight: 500;
+  opacity: 0.9;
+}
+
+.summary-card h2 {
+  margin: 0.25rem 0 0;
+  font-size: 1.8rem;
+  font-weight: 600;
+}
+
+.summary-card i {
+  opacity: 0.85;
+}
+
+/* Background Colors */
+.bg-blue {
+  background: linear-gradient(135deg, #2196f3, #1976d2);
+}
+
+.bg-green {
+  background: linear-gradient(135deg, #4caf50, #2e7d32);
+}
+
+.bg-orange {
+  background: linear-gradient(135deg, #ff9800, #ef6c00);
+}
+
+.bg-red {
+  background: linear-gradient(135deg, #f44336, #c62828);
+}
