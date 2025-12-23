@@ -4,13 +4,22 @@ import { Dashboard } from './component/dashboard/dashboard';
 import { ViewCandidate } from './component/candidate/view-candidate/view-candidate';
 import { CreateCandidate } from './component/candidate/create-candidate/create-candidate';
 import { CandidateProceedFurtherComponent } from './component/candidate/candidate-proceed-further/candidate-proceed-further';
+import {ViewClientDetailsComponent} from './component/client-details/view-client-details/view-client-details.component';
+import {
+  CreateClientDetailsComponent
+} from './component/client-details/create-client-details/create-client-details.component';
+import {ClientDetailsComponent} from './component/client-details/client-details.component';
 
 export const routes: Routes = [
   { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
+  { path: 'client', component: ClientDetailsComponent },
+  { path: 'client/view/:id', component: ViewClientDetailsComponent },
+  { path: 'client/create', component: CreateClientDetailsComponent },
   { path: 'candidates', component: Candidate },
   { path: 'candidates/view/:id', component: ViewCandidate },
   { path: 'candidates/create', component: CreateCandidate },
   { path: 'candidates/proceed/:id', component: CandidateProceedFurtherComponent },
   { path: 'dashboard', component: Dashboard },
   { path: '**', redirectTo: 'dashboard' },
+
 ];

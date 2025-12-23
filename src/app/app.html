@@ -19,6 +19,12 @@
           <span *ngIf="!collapsed">Candidates</span>
         </a>
       </li>
+      <li routerLinkActive="active" (click)="navigateTo('/client')">
+        <a routerLink="/client">
+          <i class="pi pi-users"></i>
+          <span *ngIf="!collapsed">Client Details</span>
+        </a>
+      </li>
       <li routerLinkActive="active">
         <a routerLink="/active-candidates">
           <i class="pi pi-user-plus"></i>
@@ -31,6 +37,7 @@
           <span *ngIf="!collapsed">Create Candidate</span>
         </a>
       </li>
+
     </ul>
 
     <div class="logout">

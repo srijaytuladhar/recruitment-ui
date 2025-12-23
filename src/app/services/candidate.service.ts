@@ -3,9 +3,8 @@ import { Injectable } from '@angular/core';
 import { PathConfig } from '../config/path-config';
 
 export class CandidateProcess {
-  id?: string; // MongoDB ObjectId
+  id?: string;
   resumeSource?: string;
-  detailEntryNotes?: string;
   interviewMode?: string;
   interviewDate?: Date;
   interviewName?: string;
