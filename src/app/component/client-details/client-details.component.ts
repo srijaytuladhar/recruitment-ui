@@ -43,7 +43,14 @@ export class ClientDetailsComponent implements OnInit {
   itemsTemplate = [
     { label: 'Edit', icon: 'pi pi-refresh', command: (client: any) => console.log('Edit', client) },
     { label: 'View', icon: 'pi pi-eye', command: (client: any) => this.router.navigate(['client/view', client.id]) },
-    // { label: 'Proceed Further', icon: 'pi pi-forward', command: (candidate: any) => this.router.navigate(['candidates/proceed', candidate.id]) },
+    {
+      label: 'JobList',
+      icon: 'pi pi-forward',
+      command: (client: any) => this.router.navigate(
+        ['job-details'],
+        { queryParams: { clientId: client.id } }
+      )
+    },
     { label: 'Quit', icon: 'pi pi-power-off', command: () => window.open('https://angular.io/', '_blank') },
   ];
 

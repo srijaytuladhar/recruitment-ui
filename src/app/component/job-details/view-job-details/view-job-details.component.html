@@ -1,9 +1,17 @@
 <div class="card job-card p-5 shadow-lg">
   <div class="header flex justify-content-between align-items-center mb-3">
     <h2 class="job-title">Job Details</h2>
-    <button pButton label="Back" class="p-button-secondary back-btn" (click)="goBack()">
-      <i class="pi pi-arrow-left"></i>
-    </button>
+    <div class="flex gap-5">
+      <button pButton label="Back" class="p-button-secondary back-btn" (click)="goBack()">
+        <i class="pi pi-arrow-left"></i>
+      </button>
+      <button pButton
+        icon="pi pi-user-plus"
+        label="Add Candidate"
+        class="p-button-success"
+        (click)="goToCandidateList()">
+      </button>
+    </div>
   </div>
 
   <div *ngIf="job; else noJob">
@@ -28,7 +36,7 @@
         <label class="field-label">Status:</label>
         <p-badge
           [value]="job.status"
-          [severity]="job.status === 'ACTIVE' ? 'success' : 'danger'"
+          [severity]="job.status === 'OPEN' ? 'success' : 'danger'"
           class="status-badge">
         </p-badge>
       </div>
@@ -57,7 +65,7 @@
   (click)="goToEligibleCandidatesPage()">
   <span class="eligible-badge">
     <p-badge
-      [value]="job?.eligibleCandidatesCount || 0"
+      [value]="eligibleCandidatesCount"
       severity="info">
     </p-badge>
   </span>

@@ -2,7 +2,7 @@ import {ChangeDetectorRef, Component, NgZone, OnInit} from '@angular/core';
 import {Badge} from 'primeng/badge';
 import {ButtonModule} from 'primeng/button';
 import {DialogModule} from 'primeng/dialog';
-import {CommonModule} from '@angular/common';
+import {CommonModule, Location} from '@angular/common';
 import {ToastModule} from 'primeng/toast';
 import {Tooltip} from 'primeng/tooltip';
 import {UtilService} from '../../../services/util.service';
@@ -14,6 +14,7 @@ import {InputTextModule} from 'primeng/inputtext';
 import {AccordionModule} from 'primeng/accordion';
 import {ActivatedRoute, Router} from '@angular/router';
 import {ClientService} from '../../../services/client.service';
+import {JobMapperService} from '../../../services/jobMapper.service';
 
 @Component({
   selector: 'app-view-job-details',
@@ -31,13 +32,14 @@ import {ClientService} from '../../../services/client.service';
     Badge,
     Tooltip
   ],
-  providers: [JobService, UtilService, MessageService, ClientService],
+  providers: [JobService, UtilService, MessageService, JobMapperService,ClientService],
   templateUrl: './view-job-details.component.html',
   styleUrls: ['./view-job-details.component.css']
 })
 export class ViewJobDetailsComponent implements OnInit {
   job: any = null;
   clientMap = new Map<string, string>();
+  eligibleCandidatesCount: number = 0;
   constructor(
     private route: ActivatedRoute,
     private router: Router,
@@ -46,6 +48,8 @@ export class ViewJobDetailsComponent implements OnInit {
     private ngZone: NgZone,
     private cd: ChangeDetectorRef,
     private clientService: ClientService,
+    private jobMapperService: JobMapperService,
+    private location: Location
   ) {}
 
   ngOnInit(): void {
@@ -76,6 +80,7 @@ export class ViewJobDetailsComponent implements OnInit {
           this.job = res.data;
 
           this.job.clientName = this.clientMap.get(this.job.clientId) || 'N/A';
+          this.getEligibleCandidatesCount(this.job.id);
 
           this.cd.detectChanges();
         } else {
@@ -86,10 +91,25 @@ export class ViewJobDetailsComponent implements OnInit {
         this.util.toastr(err.error?.message || 'Failed to fetch job', true);
       }
     });
+
+  }
+
+  getEligibleCandidatesCount(jobId: string) {
+    this.jobMapperService.getTotalCountByJobId(jobId).subscribe({
+      next: (res: any) => {
+        if (res.success) {
+          this.eligibleCandidatesCount = res.data.totalCount || 0;
+          this.cd.detectChanges();
+        }
+      },
+      error: () => {
+        this.eligibleCandidatesCount = 0;
+      }
+    });
   }
 
   goBack() {
-    this.router.navigate(['/job-details']);
+    this.location.back();
   }
 
   goToEligibleCandidatesPage() {
@@ -98,7 +118,16 @@ export class ViewJobDetailsComponent implements OnInit {
       return;
     }
 
-    // Navigate to your new eligible candidates page
-    this.router.navigate(['/eligible-candidates'], { queryParams: { jobId: this.job.id } });
+    this.router.navigate(['/job-mapper'], { queryParams: { jobId: this.job.id } });
+  }
+
+  goToCandidateList() {
+    if (!this.job || !this.job.id) {
+      this.util.toastr('Invalid job selected', true);
+      return;
+    }
+    this.router.navigate(['/candidates'],{
+        queryParams: { jobRequest: this.job.id}
+    });
   }
 }

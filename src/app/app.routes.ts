@@ -12,6 +12,7 @@ import {ClientDetailsComponent} from './component/client-details/client-details.
 import {JobDetailsComponent} from './component/job-details/job-details.component';
 import {ViewJobDetailsComponent} from './component/job-details/view-job-details/view-job-details.component';
 import {CreateJobDetailsComponent} from './component/job-details/create-job-details/create-job-details.component';
+import {JobMapperComponent} from './component/job-mapper/job-mapper.component';
 
 export const routes: Routes = [
   { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
@@ -25,6 +26,7 @@ export const routes: Routes = [
   { path: 'candidates/view/:id', component: ViewCandidate },
   { path: 'candidates/create', component: CreateCandidate },
   { path: 'candidates/proceed/:id', component: CandidateProceedFurtherComponent },
+  { path: 'job-mapper', component: JobMapperComponent },
   { path: 'dashboard', component: Dashboard },
   { path: '**', redirectTo: 'dashboard' },
 

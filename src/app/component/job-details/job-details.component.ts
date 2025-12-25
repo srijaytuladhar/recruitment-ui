@@ -6,16 +6,17 @@ import {InputTextModule} from 'primeng/inputtext';
 import {Menu} from 'primeng/menu';
 import {MessageService} from 'primeng/api';
 import {TableModule} from 'primeng/table';
-import {CommonModule} from '@angular/common';
+import {CommonModule, Location} from '@angular/common';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {HttpClientModule} from '@angular/common/http';
 import {TagModule} from 'primeng/tag';
 import {SplitButtonModule} from 'primeng/splitbutton';
 import {DialogModule} from 'primeng/dialog';
 import {UtilService} from '../../services/util.service';
-import {Router} from '@angular/router';
+import {ActivatedRoute, Router} from '@angular/router';
 import {JobService} from '../../services/job.service';
 import { ClientService } from '../../services/client.service';
+import {Badge} from 'primeng/badge';
 
 @Component({
   selector: 'app-job-details',
@@ -33,7 +34,8 @@ import { ClientService } from '../../services/client.service';
     SplitButtonModule,
     DialogModule,
     Menu,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    Badge
   ],
   providers: [JobService, UtilService, MessageService, ClientService],
   templateUrl: './job-details.component.html',
@@ -42,6 +44,8 @@ import { ClientService } from '../../services/client.service';
 export class JobDetailsComponent implements OnInit {
   jobList: any[] = [];
   clientMap = new Map<string, string>();
+  clientIdFilter: string | null = null;
+  isFilteredByClient = false;
   itemsTemplate = [
     { label: 'Edit', icon: 'pi pi-refresh', command: (client: any) => console.log('Edit', client) },
     { label: 'View', icon: 'pi pi-eye', command: (client: any) => this.router.navigate(['job-details/view', client.id]) },
@@ -55,11 +59,16 @@ export class JobDetailsComponent implements OnInit {
     private utilService: UtilService,
     private cd: ChangeDetectorRef,
     private clientService: ClientService,
+    private route: ActivatedRoute,
+    private location: Location
   ) {}
 
   ngOnInit(): void {
-    this.fetchClients();
-    this.fetchAll();
+    this.route.queryParams.subscribe(params => {
+      this.clientIdFilter = params['clientId'] || null;
+      this.isFilteredByClient = !!this.clientIdFilter;
+      this.fetchClients();
+    });
   }
 
   fetchClients() {
@@ -70,6 +79,7 @@ export class JobDetailsComponent implements OnInit {
           this.clientMap.set(client.id, client.companyName);
         });
         this.cd.detectChanges();
+        this.fetchAll();
       },
       error: () => this.utilService.toastr('Failed to load clients', true)
     });
@@ -78,11 +88,17 @@ export class JobDetailsComponent implements OnInit {
   fetchAll() {
     this.service.fetchAllJobs().subscribe({
       next: (res) => {
-        this.jobList = res.data || [];
-        this.jobList.forEach(job => {
-            job.clientName = this.clientMap.get(job.clientId) || 'N/A';
-          job.items = this.itemsTemplate.map(item => ({ ...item, command: () => item.command(job) }));
-        });
+        let jobs = res.data || [];
+        if (this.clientIdFilter) {
+          jobs = jobs.filter((job: { clientId: string | null; }) => job.clientId === this.clientIdFilter);
+        }
+
+        this.jobList = jobs.map((job: { clientId: string; }) => ({
+          ...job,
+          clientName: this.clientMap.get(job.clientId) || 'N/A',
+          items: this.itemsTemplate.map(item => ({ ...item, command: () => item.command(job) }))
+        }));
+
         this.cd.detectChanges();
       },
       error: (err) => this.utilService.toastr(err.error?.message || 'Failed to fetch jobs', true)
@@ -95,5 +111,9 @@ export class JobDetailsComponent implements OnInit {
 
   navigateToView(id: string) {
     this.router.navigate(['job-details/view', id]);
+  }
+
+  goBack(){
+    this.location.back();
   }
 }

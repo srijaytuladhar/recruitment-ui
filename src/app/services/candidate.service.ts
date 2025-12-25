@@ -61,4 +61,8 @@ export class CandidateService {
   fetchDropdown() {
     return this.http.get<any[]>(PathConfig.API_ENDPOINT +`dropdown/fetchJobList`);
   }
+
+  fetchCandidatesByIds(candidateIds: string[]) {
+    return this.http.post<any>(`${this.baseUrl}/by-ids`,  {candidateIds} );
+  }
 }

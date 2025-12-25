@@ -2,9 +2,10 @@ import { CommonModule } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
 import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
-import { Router } from '@angular/router';
+import {ActivatedRoute, Router} from '@angular/router';
+import { Location } from '@angular/common';
 
-// PrimeNG modules
+
 import { TableModule } from 'primeng/table';
 import { InputTextModule } from 'primeng/inputtext';
 import { InputIconModule } from 'primeng/inputicon';
@@ -13,15 +14,15 @@ import { ButtonModule } from 'primeng/button';
 import { TagModule } from 'primeng/tag';
 import { SplitButtonModule } from 'primeng/splitbutton';
 import { DialogModule } from 'primeng/dialog';
-import { SafePipe } from '../../config/safe.pipe'; // Needed for iframe | safe
+import { SafePipe } from '../../config/safe.pipe';
 
-// Services
 import { CandidateService } from '../../services/candidate.service';
 import { UtilService } from '../../services/util.service';
 import { MessageService } from 'primeng/api';
 import {Tooltip} from 'primeng/tooltip';
 import { Menu } from "primeng/menu";
 import {Select} from 'primeng/select';
+import {JobMapperService} from '../../services/jobMapper.service';
 
 @Component({
   selector: 'app-candidate',
@@ -46,7 +47,7 @@ import {Select} from 'primeng/select';
     Select,
     ReactiveFormsModule
   ],
-  providers: [CandidateService, UtilService, MessageService],
+  providers: [CandidateService, UtilService, MessageService, JobMapperService],
 })
 export class Candidate implements OnInit {
 
@@ -54,7 +55,7 @@ export class Candidate implements OnInit {
   displayResumeModal = false;
   resumeSrc: string = '';
   resumeMimeType: string = '';
-
+  selectedCandidates: any[] = [];
   selectedWorkStatus: string = '';
   workStatus: { label: string; value: string }[] = [
     { label: 'All', value: '' },
@@ -70,19 +71,29 @@ export class Candidate implements OnInit {
     { label: 'Quit', icon: 'pi pi-power-off', command: () => window.open('https://angular.io/', '_blank') },
   ];
 
+  jobRequestId: string | null = null;
+  isJobContext = false;
+
   constructor(
     private router: Router,
     private service: CandidateService,
     private utilService: UtilService,
-    private cd: ChangeDetectorRef
+    private cd: ChangeDetectorRef,
+    private route: ActivatedRoute,
+    private jobMapperService: JobMapperService,
+    private location: Location
   ) {}
 
   ngOnInit(): void {
-    this.fetchAll();
+    this.route.queryParams.subscribe(params => {
+      this.jobRequestId = params['jobRequest'] || null;
+      this.isJobContext = !!this.jobRequestId;
+      this.fetchCandidates();
+    });
   }
 
 
-  fetchAll() {
+  fetchCandidates() {
     this.service.fetchAllCandidate().subscribe({
       next: (res) => {
         this.candidateList = res.data || [];
@@ -140,5 +151,60 @@ export class Candidate implements OnInit {
       NOT_LOOKING: 'Not Looking'
     };
     return map[value] || 'N/A';
+  }
+
+  mapCandidate(candidate: any) {
+    if (!this.jobRequestId) return;
+
+    const payload = {
+      jobId: this.jobRequestId,
+      candidateId: candidate.id
+    };
+
+    this.jobMapperService.mapCandidateToJob(payload).subscribe({
+      next: () => {
+        this.utilService.toastr('Candidate mapped successfully', false);
+
+        this.router.navigate(
+          ['/job-mapper'],
+          { queryParams: { jobId: this.jobRequestId } }
+        );
+      },
+      error: err =>
+        this.utilService.toastr(
+          err.error?.message || 'Failed to map candidate',
+          true
+        )
+    });
+  }
+
+  goBack() {
+    this.location.back();
+  }
+
+  mapSelectedCandidates() {
+    if (!this.jobRequestId || !this.selectedCandidates.length) return;
+
+    const candidateIds = this.selectedCandidates.map(c => c.id);
+
+    const payload = {
+      jobId: this.jobRequestId,
+      candidateIds: candidateIds
+    };
+
+    this.jobMapperService.mapCandidateToJob(payload).subscribe({
+      next: () => {
+        this.utilService.toastr('Candidate mapped successfully', false);
+        this.router.navigate(
+          ['/job-mapper'],
+          { queryParams: { jobId: this.jobRequestId } }
+        );
+      },
+      error: err =>
+        this.utilService.toastr(
+          err.error?.message || 'Failed to map candidates',
+          true
+        )
+    });
   }
 }

@@ -1,7 +1,7 @@
 import { ChangeDetectorRef, Component, NgZone, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ButtonModule } from 'primeng/button';
-import { CommonModule } from '@angular/common';
+import {CommonModule, Location} from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 import { InputTextModule } from 'primeng/inputtext';
@@ -14,6 +14,7 @@ import { SafePipe } from '../../../config/safe.pipe';
 import { AccordionModule } from 'primeng/accordion';
 import { Badge } from "primeng/badge";
 import {Tooltip} from 'primeng/tooltip';
+
 
 @Component({
   selector: 'app-view-candidate',
@@ -52,7 +53,8 @@ export class ViewCandidate implements OnInit {
     private util: UtilService,
     private service: CandidateService,
     private ngZone: NgZone,
-    private cd: ChangeDetectorRef
+    private cd: ChangeDetectorRef,
+    private location: Location
   ) {}
 
   ngOnInit(): void {
@@ -91,7 +93,7 @@ export class ViewCandidate implements OnInit {
   }
 
   goBack() {
-    this.router.navigate(['/candidates']);
+    this.location.back();
   }
 
   downloadResume() {
