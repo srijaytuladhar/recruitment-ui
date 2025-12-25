@@ -1,0 +1,67 @@
+<div class="form-container">
+  <p-toast position="top-right"></p-toast>
+
+  <div class="header">
+    <button pButton label="Back" class="p-button-secondary" (click)="goBack()">
+      <i class="pi pi-arrow-left"></i>
+    </button>
+  </div>
+
+  <h2>Create Job Details</h2>
+
+  <form [formGroup]="jobForm" (ngSubmit)="saveJobDetails()" class="candidate-form">
+
+    <div class="basic-form">
+      <div class="form-row">
+        <div class="form-group">
+          <label >Title</label>
+          <input pInputText type="text" formControlName="title" placeholder="Enter job title"/>
+        </div>
+        <div class="form-group">
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group mt-3">
+          <p-floatLabel>
+            <textarea
+              pTextarea
+              id="description"
+              formControlName="description"
+              rows="5"
+              cols="66"
+              style="resize: none"
+              class="h-full">
+            </textarea>
+            <label for="description">Description</label>
+          </p-floatLabel>
+        </div>
+
+        <div class="form-group">
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label>Client Name</label>
+          <p-select
+            formControlName="clientId"
+            [options]="clientOptions"
+            placeholder="Select company name"
+            [filter]="true"
+            filterBy="label"
+            showClear="true"
+            class="w-full">
+          </p-select>
+        </div>
+        <div class="form-group">
+        </div>
+      </div>
+    </div>
+
+    <div class="form-actions mt-3">
+      <button pButton type="submit" label="Save Job Details" class="p-button-success"></button>
+    </div>
+
+  </form>
+</div>

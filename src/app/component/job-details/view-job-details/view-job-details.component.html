@@ -1,0 +1,64 @@
+<div class="card job-card p-5 shadow-lg">
+  <div class="header flex justify-content-between align-items-center mb-3">
+    <h2 class="job-title">Job Details</h2>
+    <button pButton label="Back" class="p-button-secondary back-btn" (click)="goBack()">
+      <i class="pi pi-arrow-left"></i>
+    </button>
+  </div>
+
+  <div *ngIf="job; else noJob">
+    <div class="grid grid-nogutter gap-2">
+
+      <div class="col-12 job-field">
+        <label class="field-label">Title:</label>
+        <p class="field-value">{{ job.title }}</p>
+      </div>
+
+      <div class="col-12 job-field">
+        <label class="field-label">Client:</label>
+        <p class="field-value">{{ job.clientName }}</p>
+      </div>
+
+      <div class="col-12 job-field">
+        <label class="field-label">Created Date:</label>
+        <p class="field-value">{{ job.createdDate | date:'yyyy-MM-dd' }}</p>
+      </div>
+
+      <div class="col-12 job-field">
+        <label class="field-label">Status:</label>
+        <p-badge
+          [value]="job.status"
+          [severity]="job.status === 'ACTIVE' ? 'success' : 'danger'"
+          class="status-badge">
+        </p-badge>
+      </div>
+
+      <div class="col-12 mt-4">
+        <label class="field-label">Description:</label>
+        <div class="description-card">
+          {{ job.description }}
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- No job found -->
+  <ng-template #noJob>
+    <p class="no-job-text">Job details not found.</p>
+  </ng-template>
+</div>
+
+<button
+  pButton
+  icon="pi pi-users"
+  class="p-button-rounded p-button-success fab-right large-icon"
+  pTooltip="View Eligible Candidates"
+  tooltipPosition="left"
+  (click)="goToEligibleCandidatesPage()">
+  <span class="eligible-badge">
+    <p-badge
+      [value]="job?.eligibleCandidatesCount || 0"
+      severity="info">
+    </p-badge>
+  </span>
+</button>

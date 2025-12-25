@@ -17,13 +17,13 @@ export class Dashboard {
       color: 'bg-blue',
     },
     {
-      title: 'Revenue',
+      title: 'Candidates',
       value: '$82,300',
       icon: 'pi pi-wallet',
       color: 'bg-green',
     },
     {
-      title: 'Orders',
+      title: 'Clients',
       value: 1380,
       icon: 'pi pi-shopping-cart',
       color: 'bg-orange',
@@ -40,8 +40,8 @@ export class Dashboard {
     labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
     datasets: [
       {
-        label: 'Revenue',
-        data: [12000, 15000, 18000, 17000, 21000, 25000],
+        label: 'Candidates',
+        data: [120, 180, 170, 150, 180, 200],
         fill: false,
         tension: 0.4,
       },
@@ -49,11 +49,11 @@ export class Dashboard {
   };
 
   barData = {
-    labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
     datasets: [
       {
-        label: 'Orders',
-        data: [120, 190, 300, 250, 220, 310, 280],
+        label: 'Clients',
+        data: [12, 19, 30, 25, 22, 31, 28],
       },
     ],
   };

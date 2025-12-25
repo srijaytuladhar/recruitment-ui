@@ -9,12 +9,18 @@ import {
   CreateClientDetailsComponent
 } from './component/client-details/create-client-details/create-client-details.component';
 import {ClientDetailsComponent} from './component/client-details/client-details.component';
+import {JobDetailsComponent} from './component/job-details/job-details.component';
+import {ViewJobDetailsComponent} from './component/job-details/view-job-details/view-job-details.component';
+import {CreateJobDetailsComponent} from './component/job-details/create-job-details/create-job-details.component';
 
 export const routes: Routes = [
   { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
   { path: 'client', component: ClientDetailsComponent },
   { path: 'client/view/:id', component: ViewClientDetailsComponent },
   { path: 'client/create', component: CreateClientDetailsComponent },
+  { path: 'job-details', component: JobDetailsComponent },
+  { path: 'job-details/view/:id', component: ViewJobDetailsComponent },
+  { path: 'job-details/create', component: CreateJobDetailsComponent },
   { path: 'candidates', component: Candidate },
   { path: 'candidates/view/:id', component: ViewCandidate },
   { path: 'candidates/create', component: CreateCandidate },

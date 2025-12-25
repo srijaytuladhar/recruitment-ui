@@ -13,7 +13,7 @@
         <input
           type="text"
           pInputText
-          placeholder="Search clients"
+          placeholder="Search by Client"
           (input)="dt1.filterGlobal($event.target.value, 'contains')"
         />
       </p-iconfield>
@@ -27,7 +27,7 @@
       [paginator]="true"
       [rows]="10"
       [rowsPerPageOptions]="[10, 25, 50]"
-      [globalFilterFields]="['companyName','email','contactNumber','hiringContactPerson','billingContactPerson']"
+      [globalFilterFields]="['companyName']"
       [scrollable]="true"
       [responsiveLayout]="'scroll'">
 

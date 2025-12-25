@@ -73,3 +73,8 @@ button.resume-btn.p-disabled {
 .badge-default {
   background-color: #000;
 }
+
+tr {
+  cursor: pointer;
+}
+
