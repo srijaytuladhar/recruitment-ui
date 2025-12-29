@@ -16,6 +16,7 @@ import { CandidateService } from '../../../services/candidate.service';
 import { UtilService } from '../../../services/util.service';
 import { MessageService } from 'primeng/api';
 import {DatePicker} from 'primeng/datepicker';
+import {Select} from 'primeng/select';
 
 @Component({
   selector: 'app-create-candidate',
@@ -30,7 +31,8 @@ import {DatePicker} from 'primeng/datepicker';
     FileUploadModule,
     ToastModule,
     CheckboxModule,
-    DatePicker
+    DatePicker,
+    Select
   ],
   templateUrl: './create-candidate.html',
   styleUrls: ['./create-candidate.css'],
@@ -39,6 +41,12 @@ import {DatePicker} from 'primeng/datepicker';
 export class CreateCandidate implements OnInit {
 
   candidateForm!: FormGroup;
+  jobVertical: { label: string; value: string }[] = [];
+  workStatus: { label: string; value: string }[] = [
+    { label: 'Open to Work', value: 'OPEN_TO_WORK' },
+    { label: 'Working', value: 'WORKING' },
+    { label: 'Not Looking', value: 'NOT_LOOKING' }
+  ];
 
   constructor(
     private fb: FormBuilder,
@@ -58,8 +66,16 @@ export class CreateCandidate implements OnInit {
       jobVertical: ['', Validators.required],
       totalYearsOfExperience: ['', Validators.required],
       resumeBase64: ['', Validators.required],
+      workStatus: ['', Validators.required],
       education: this.fb.array([]),
       experience: this.fb.array([])
+    });
+
+    this.service.fetchDropdown().subscribe(res => {
+      this.jobVertical = res.map((v: string) => ({
+        label: v,
+        value: v
+      }));
     });
   }
 

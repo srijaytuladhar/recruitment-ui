@@ -1,0 +1,77 @@
+<div class="form-container">
+  <p-toast position="top-right"></p-toast>
+
+  <div class="header">
+    <button pButton label="Back" class="p-button-secondary" (click)="goBack()">
+      <i class="pi pi-arrow-left"></i>
+    </button>
+  </div>
+
+  <h2>Create Candidate Profile</h2>
+
+  <form [formGroup]="clientForm" (ngSubmit)="saveClientDetails()" class="candidate-form">
+
+    <div class="basic-form">
+      <div class="form-row">
+        <div class="form-group">
+          <label>Company Name</label>
+          <input pInputText type="text" formControlName="companyName" placeholder="Enter Company name"/>
+        </div>
+        <div class="form-group">
+          <label>Company Email</label>
+          <input pInputText type="email" formControlName="email" placeholder="Enter company email"/>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label>Contact Number</label>
+          <input pInputText type="text" formControlName="contactNumber" placeholder="Enter Company contact number"/>
+        </div>
+        <div class="form-group">
+          <label>CEO Name</label>
+          <input pInputText type="text" formControlName="ceoName" placeholder="Enter CEO name"/>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label>Hiring Contact Person</label>
+          <input pInputText type="text" formControlName="hiringContactPerson" placeholder="Enter hiring contact person"/>
+        </div>
+        <div class="form-group">
+          <label>Billing Contact Person</label>
+          <input pInputText type="text" formControlName="billingContactPerson" placeholder="Enter billing contact person"/>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label>Company URL</label>
+          <input pInputText type="text" formControlName="companyUrl" placeholder="Enter company url"/>
+        </div>
+        <div class="form-group">
+        </div>
+      </div>
+
+    </div>
+
+    <div class="form-group">
+      <label>Upload Company Logo</label>
+      <p-fileUpload
+        mode="basic"
+        chooseLabel="Choose"
+        chooseIcon="pi pi-upload"
+        name="resume"
+        accept="application/pdf, image/*"
+        maxFileSize="10000000"
+        (onSelect)="onUpload($event)">
+      </p-fileUpload>
+    </div>
+
+    <div class="form-actions mt-3">
+      <button pButton type="submit" label="Save Client" class="p-button-success"></button>
+    </div>
+
+  </form>
+</div>

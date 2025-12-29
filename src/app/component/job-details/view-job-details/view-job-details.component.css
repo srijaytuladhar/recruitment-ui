@@ -1,0 +1,86 @@
+.job-card {
+  background: #ffffff;
+  border-radius: 12px;
+  padding-top:0.5rem !important;
+  box-shadow: 0 6px 20px rgba(0,0,0,0.08);
+}
+
+.header .job-title {
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: #333;
+}
+
+.back-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.job-field {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.field-label {
+  font-weight: 600;
+  color: #555;
+  min-width: 120px;
+}
+
+.field-value {
+  color: #333;
+  font-size: 1rem;
+}
+
+.status-badge {
+  font-size: 0.9rem;
+  padding: 0.5rem 0.8rem;
+  border-radius: 12px;
+}
+
+.description-card {
+  background-color: #f9f9f9;
+  padding: 1rem;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  line-height: 1.5;
+  white-space: pre-wrap;
+  color: #444;
+  margin-top: 0.5rem;
+  box-shadow: inset 0 1px 3px rgba(0,0,0,0.05);
+}
+
+.no-job-text {
+  color: #e74c3c;
+  font-weight: 600;
+  text-align: center;
+  margin-top: 2rem;
+  font-size: 1.1rem;
+}
+.fab-right {
+  position: fixed;
+  top: 50%;
+  right: 20px;
+  transform: translateY(-50%);
+  z-index: 1000;
+  width: 60px;
+  height: 60px;
+  font-size: 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  transition: width 0.3s, padding 0.3s;
+}
+
+.fab-right .eligible-badge {
+  position: absolute;
+  top: -8px;
+  right: 6px;
+}
+
+::ng-deep .large-icon .pi {
+  font-size: 1.5rem;
+}

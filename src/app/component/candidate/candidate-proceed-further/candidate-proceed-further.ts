@@ -13,7 +13,7 @@ import { animate, state, style, transition, trigger } from '@angular/animations'
 
 import { CandidateService } from '../../../services/candidate.service';
 import { UtilService } from '../../../services/util.service';
-import {NgIf} from '@angular/common';
+import {Location, NgIf} from '@angular/common';
 import {Badge} from 'primeng/badge';
 import {Tooltip} from 'primeng/tooltip';
 import {Textarea} from 'primeng/textarea';
@@ -88,7 +88,8 @@ export class CandidateProceedFurtherComponent implements OnInit {
     private router: Router,
     private route: ActivatedRoute,
     private service: CandidateService,
-    private util: UtilService
+    private util: UtilService,
+    private location: Location
   ) {}
 
   ngOnInit(): void {
@@ -115,7 +116,7 @@ export class CandidateProceedFurtherComponent implements OnInit {
   }
 
   goBack() {
-    this.router.navigate(['/candidates']);
+    this.location.back();
   }
 
   saveAndNext(activateCallback: any, nextStep: number) {

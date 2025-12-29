@@ -45,3 +45,36 @@ button.resume-btn.p-disabled {
   cursor: default !important;
   opacity: 1 !important;
 }
+
+
+.status-badge {
+  display: inline-block;
+  padding: 0.25rem 0.6rem;
+  border-radius: 12px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  text-align: center;
+  min-width: 120px;
+  color: white;
+}
+
+.badge-open {
+  background-color: #28a745;
+}
+
+.badge-working {
+  background-color: #fd7e14;
+}
+
+.badge-not-looking {
+  background-color: #6c757d;
+}
+
+.badge-default {
+  background-color: #000;
+}
+
+tr {
+  cursor: pointer;
+}
+

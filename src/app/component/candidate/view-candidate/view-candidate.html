@@ -6,7 +6,7 @@
   </button>
   <div class="header flex align-items-center mb-4 justify-content-between">
     <div class="flex align-items-center">
-      <h2 class="ml-3">{{ candidate?.name || 'Candidate Details' }}</h2> 
+      <h2 class="ml-3">{{ candidate?.name || 'Candidate Details' }}</h2>
       <p-badge [value]="" severity="success" badgeSize="large" class="ml-2" *ngIf="candidate.status === 'ACTIVE'" pTooltip="Active User"/>
       <p-badge [value]="" severity="danger" badgeSize="large" class="ml-2" *ngIf="candidate.status !== 'ACTIVE'" pTooltip="Inactive User"/>
       <!-- <span *ngIf="candidate" [ngClass]="{
@@ -35,6 +35,7 @@
         <div class="form-row"><label>Job Location Desired:</label><div class="value">{{ candidate.jobLocationDesired }}</div></div>
         <div class="form-row"><label>Experience:</label><div class="value">{{ candidate.totalYearsOfExperience }} yrs</div></div>
         <div class="form-row"><label>Job Vertical:</label><div class="value">{{ candidate.jobVertical }}</div></div>
+        <div class="form-row"><label>Work Status:</label><div class="value">{{ candidate.workStatus ? candidate.workStatus : "N/A" }}</div></div>
       </div>
     </div>
 
@@ -67,8 +68,8 @@
       </div>
     </div>
 
-    <p-button label="Proceed Further" [raised]="true" severity="success" (click)="navigateTo(candidate.id)">
-    </p-button>
+<!--    <p-button label="Proceed Further" [raised]="true" severity="success" (click)="navigateTo(candidate.id)">-->
+<!--    </p-button>-->
   </ng-container>
 
   <ng-template #loading>

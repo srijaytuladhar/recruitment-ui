@@ -1,7 +1,20 @@
-<div *ngIf="isLogin">
-  <input type="text" placeholder="username"/>
-  <input type="password" placeholder="password"/>
-  <button (click)="toggleLogin()">Login</button>
+<div *ngIf="isLogin" class="login-wrapper">
+  <div class="login-card p-shadow-3">
+    <h2 class="login-title">Sign In to Your Account</h2>
+    <div  class="login-form">
+      <div class="field">
+        <label for="username">Username</label>
+        <input id="username" type="text" pInputText placeholder="Enter your username" />
+      </div>
+
+      <div class="field">
+        <label for="password">Password</label>
+        <input id="password" type="password" pPassword placeholder="Enter your password" />
+      </div>
+
+      <button pButton label="Login" class="login-btn p-button-rounded p-button-success" (click)="toggleLogin()"></button>
+    </div>
+  </div>
 </div>
 <div class="layout-wrapper" *ngIf="!isLogin">
   <!-- Sidebar -->
@@ -24,18 +37,31 @@
           <span *ngIf="!collapsed">Candidates</span>
         </a>
       </li>
-      <li routerLinkActive="active">
-        <a routerLink="/active-candidates">
-          <i class="pi pi-user-plus"></i>
-          <span *ngIf="!collapsed">Active Candidates</span>
+      <li routerLinkActive="active" (click)="navigateTo('/client')">
+        <a routerLink="/client">
+          <i class="pi pi-id-card"></i>
+          <span *ngIf="!collapsed">Client Details</span>
         </a>
       </li>
-      <li routerLinkActive="active">
-        <a routerLink="/create-candidate">
-          <i class="pi pi-plus"></i>
-          <span *ngIf="!collapsed">Create Candidate</span>
+      <li routerLinkActive="active" (click)="navigateTo('/job-details')">
+        <a routerLink="/job-details">
+          <i class="pi pi-briefcase"></i>
+          <span *ngIf="!collapsed">Job Details</span>
         </a>
       </li>
+<!--      <li routerLinkActive="active">-->
+<!--        <a routerLink="/active-candidates">-->
+<!--          <i class="pi pi-user-plus"></i>-->
+<!--          <span *ngIf="!collapsed">Active Candidates</span>-->
+<!--        </a>-->
+<!--      </li>-->
+<!--      <li routerLinkActive="active">-->
+<!--        <a routerLink="/create-candidate">-->
+<!--          <i class="pi pi-plus"></i>-->
+<!--          <span *ngIf="!collapsed">Create Candidate</span>-->
+<!--        </a>-->
+<!--      </li>-->
+
     </ul>
 
     <div class="logout">

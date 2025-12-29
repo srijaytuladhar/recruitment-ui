@@ -3,9 +3,8 @@ import { Injectable } from '@angular/core';
 import { PathConfig } from '../config/path-config';
 
 export class CandidateProcess {
-  id?: string; // MongoDB ObjectId
+  id?: string;
   resumeSource?: string;
-  detailEntryNotes?: string;
   interviewMode?: string;
   interviewDate?: Date;
   interviewName?: string;
@@ -57,5 +56,13 @@ export class CandidateService {
 
   createCandidateProcess(process: CandidateProcess) {
     return this.http.post<any>(`${this.baseUrl}/process`, process);
+  }
+
+  fetchDropdown() {
+    return this.http.get<any[]>(PathConfig.API_ENDPOINT +`dropdown/fetchJobList`);
+  }
+
+  fetchCandidatesByIds(candidateIds: string[]) {
+    return this.http.post<any>(`${this.baseUrl}/by-ids`,  {candidateIds} );
   }
 }
