@@ -1,14 +1,19 @@
 <div class="card">
   <div class="header flex justify-content-between align-items-center mb-2">
     <h2>List of Client Details</h2>
-    <p-button label="Create Clients" [raised]="true" severity="success" (click)="navigateTo('client/create')">
+    <p-button
+      label="Create Clients"
+      [raised]="true"
+      severity="success"
+      (click)="navigateTo('client/create')"
+    >
       <i class="pi pi-plus"></i>
     </p-button>
   </div>
 
-  <div class="mb-3" style="max-width: 500px;">
+  <div class="mb-3" style="max-width: 500px">
     <div class="flex gap-2">
-      <p-iconfield style="flex: 1;">
+      <p-iconfield style="flex: 1">
         <p-inputicon class="pi pi-search"></p-inputicon>
         <input
           type="text"
@@ -29,24 +34,29 @@
       [rowsPerPageOptions]="[10, 25, 50]"
       [globalFilterFields]="['companyName']"
       [scrollable]="true"
-      [responsiveLayout]="'scroll'">
-
+      [responsiveLayout]="'scroll'"
+    >
       <ng-template pTemplate="header">
         <tr>
           <th>Action</th>
-          <th pSortableColumn="companyName">Company Name
+          <th pSortableColumn="companyName">
+            Company Name
             <p-sortIcon field="companyName"></p-sortIcon>
           </th>
-          <th pSortableColumn="email">Company Email
+          <th pSortableColumn="email">
+            Company Email
             <p-sortIcon field="email"></p-sortIcon>
           </th>
-          <th pSortableColumn="contactNumber">Contact
+          <th pSortableColumn="contactNumber">
+            Contact
             <p-sortIcon field="contactNumber"></p-sortIcon>
           </th>
-          <th pSortableColumn="hiringContactPerson">Hiring Contact Person
+          <th pSortableColumn="hiringContactPerson">
+            Hiring Contact Person
             <p-sortIcon field="hiringContactPerson"></p-sortIcon>
           </th>
-          <th pSortableColumn="billingContactPerson">Billing Contact Person
+          <th pSortableColumn="billingContactPerson">
+            Billing Contact Person
             <p-sortIcon field="billingContactPerson"></p-sortIcon>
           </th>
         </tr>
@@ -71,7 +81,15 @@
             ></p-menu>
           </td>
           <td>
-            <div class="truncate-text">{{ client.companyName }}</div>
+            <div class="truncate-text">
+              <img
+                class="mt-4"
+                src="{{ client.companyLogoBase64 }}"
+                alt="Company Logo"
+                style="margin-right: 10px; height: 10px; width: 30px; border-radius: 10%"
+              />
+              {{ client.companyName }}
+            </div>
           </td>
           <td>
             <div class="truncate-text">{{ client.email }}</div>
@@ -85,7 +103,6 @@
           <td>
             <div class="truncate-text">{{ client.billingContactPerson }}</div>
           </td>
-
         </tr>
       </ng-template>
 

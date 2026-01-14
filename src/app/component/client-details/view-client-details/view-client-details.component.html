@@ -6,35 +6,82 @@
   </button>
   <div class="header flex align-items-center mb-4 justify-content-between">
     <div class="flex align-items-center">
-      <h2 class="ml-3">{{ client?.companyName || 'Client Details' }}</h2>
-      <p-badge [value]="" severity="success" badgeSize="large" class="ml-2" *ngIf="client.status === 'ACTIVE'" pTooltip="Active User"/>
-      <p-badge [value]="" severity="danger" badgeSize="large" class="ml-2" *ngIf="client.status !== 'ACTIVE'" pTooltip="Inactive User"/>
+      <!-- <h2 class="ml-3">{{ client?.companyName || "Client Details" }}</h2> -->
+      <img
+      class="mt-4"
+        src="{{ client.companyLogoBase64 }}"
+        alt="Company Logo"
+        style="margin-left: 20px; height: 50px; border-radius: 10%"
+      />
+      <!-- <p-badge [value]="" severity="success" badgeSize="large" class="ml-2" *ngIf="client.status === 'ACTIVE'" pTooltip="Active User"/> -->
+      <!-- <p-badge [value]="" severity="danger" badgeSize="large" class="ml-2" *ngIf="client.status !== 'ACTIVE'" pTooltip="Inactive User"/> -->
       <!-- <span *ngIf="candidate" [ngClass]="{
         'status-badge-active': candidate.status === 'ACTIVE',
         'status-badge-inactive': candidate.status !== 'ACTIVE'
       }" style="font-size: 12px;">{{ candidate.status }}</span> -->
     </div>
-    <div class="resume-actions">
-      <button pButton type="button" label="Download Logo" icon="pi pi-download" class="p-button-success" (click)="downloadResume()"></button>
-      <button pButton type="button" label="View Logo" icon="pi pi-eye" class="p-button-info" (click)="viewResume()"></button>
+    <div class="resume-actions" hidden>
+      <button
+        pButton
+        type="button"
+        label="Download Logo"
+        icon="pi pi-download"
+        class="p-button-success"
+        (click)="downloadResume()"
+      ></button>
+      <button
+        pButton
+        type="button"
+        label="View Logo"
+        icon="pi pi-eye"
+        class="p-button-info"
+        (click)="viewResume()"
+      ></button>
     </div>
   </div>
 
   <ng-container *ngIf="client; else loading">
-
     <div class="card section-card mb-4">
       <h3 (click)="togglePersonalInformation()" class="collapsible-header">
         Personal Information
-        <i class="pi" [ngClass]="{'pi-chevron-down': !showInformation, 'pi-chevron-up': showInformation}"></i>
+        <i
+          class="pi"
+          [ngClass]="{
+            'pi-chevron-down': !showInformation,
+            'pi-chevron-up': showInformation
+          }"
+        ></i>
       </h3>
 
       <div *ngIf="showInformation">
-        <div class="form-row"><label>Company Email:</label><div class="value">{{ client.email }}</div></div>
-        <div class="form-row"><label>Company Contact:</label><div class="value">{{ client.contactNumber }}</div></div>
-        <div class="form-row"><label>Company CEO:</label><div class="value">{{ client.ceoName }}</div></div>
-        <div class="form-row"><label>Hiring Contact Number:</label><div class="value">{{ client.hiringContactPerson }}</div></div>
-        <div class="form-row"><label>Billing Contact number:</label><div class="value">{{ client.billingContactPerson }}</div></div>
-        <div class="form-row"><label>Company URL</label><div class="value">{{ client.companyUrl }}</div></div>
+        <div class="form-row">
+          <label>Company Name:</label>
+          <div class="value">{{ client.companyName }}</div>
+        </div>
+        <div class="form-row">
+          <label>Company Email:</label>
+          <div class="value">{{ client.email }}</div>
+        </div>
+        <div class="form-row">
+          <label>Company Contact:</label>
+          <div class="value">{{ client.contactNumber }}</div>
+        </div>
+        <div class="form-row">
+          <label>Company CEO:</label>
+          <div class="value">{{ client.ceoName }}</div>
+        </div>
+        <div class="form-row">
+          <label>Hiring Contact Number:</label>
+          <div class="value">{{ client.hiringContactPerson }}</div>
+        </div>
+        <div class="form-row">
+          <label>Billing Contact number:</label>
+          <div class="value">{{ client.billingContactPerson }}</div>
+        </div>
+        <div class="form-row">
+          <label>Company URL</label>
+          <div class="value">{{ client.companyUrl }}</div>
+        </div>
       </div>
     </div>
   </ng-container>
@@ -43,17 +90,40 @@
     <p>Loading client details...</p>
   </ng-template>
 
-  <p-dialog header="Logo Preview"
-            [(visible)]="displayResumeModal"
-            [modal]="true"
-            [closable]="true"
-            [resizable]="true"
-            [draggable]="false"
-            [style]="{ width: '95vw', maxWidth: '95vw', height: '95vh', maxHeight: '95vh', padding: '0' }"
-            [contentStyle]="{ height: 'calc(95vh - 50px)', overflow: 'auto', padding: '0' }">
+  <p-dialog
+    header="Logo Preview"
+    [(visible)]="displayResumeModal"
+    [modal]="true"
+    [closable]="true"
+    [resizable]="true"
+    [draggable]="false"
+    [style]="{
+      width: '95vw',
+      maxWidth: '95vw',
+      height: '95vh',
+      maxHeight: '95vh',
+      padding: '0'
+    }"
+    [contentStyle]="{
+      height: 'calc(95vh - 50px)',
+      overflow: 'auto',
+      padding: '0'
+    }"
+  >
     <ng-container *ngIf="resumeSrc">
-      <iframe *ngIf="resumeMimeType === 'application/pdf'" [src]="resumeSrc | safe" width="100%" height="100%" style="border:none;"></iframe>
-      <img *ngIf="resumeMimeType.startsWith('image/')" [src]="resumeSrc" width="100%" style="height:100%; object-fit:contain; display:block; margin:auto;" />
+      <iframe
+        *ngIf="resumeMimeType === 'application/pdf'"
+        [src]="resumeSrc | safe"
+        width="100%"
+        height="100%"
+        style="border: none"
+      ></iframe>
+      <img
+        *ngIf="resumeMimeType.startsWith('image/')"
+        [src]="resumeSrc"
+        width="100%"
+        style="height: 100%; object-fit: contain; display: block; margin: auto"
+      />
     </ng-container>
   </p-dialog>
 </div>
