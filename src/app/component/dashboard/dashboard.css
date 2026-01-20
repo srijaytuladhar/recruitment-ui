@@ -7,6 +7,9 @@
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
 }
 
+p-panel{
+  border: none;
+}
 .summary-card h3 {
   margin: 0;
   font-size: 0.9rem;
