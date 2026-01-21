@@ -1,6 +1,6 @@
-import {Injectable} from '@angular/core';
-import {PathConfig} from '../config/path-config';
-import {HttpClient} from '@angular/common/http';
+import { Injectable } from '@angular/core';
+import { PathConfig } from '../config/path-config';
+import { HttpClient } from '@angular/common/http';
 
 @Injectable({
   providedIn: 'root'
@@ -21,5 +21,9 @@ export class ClientService {
 
   fetchClientById(id: string) {
     return this.http.get<any>(`${this.baseUrl}/detail/${id}`);
+  }
+
+  updateClient(data: any) {
+    return this.http.post<any>(`${this.baseUrl}/update`, data);
   }
 }

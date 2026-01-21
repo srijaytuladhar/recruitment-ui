@@ -53,10 +53,10 @@ export class App {
 
   }
 
-   navigateTo(path: string) {
+  navigateTo(path: string) {
     this.router.navigate([path]);
   }
-  
+
   ngOnInit() {
     this.menuItems = [
       { label: 'Dashboard', icon: 'pi pi-home' },

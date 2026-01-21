@@ -1,5 +1,6 @@
 <div class="container">
   <p-toast position="top-right"></p-toast>
+  <p-confirmDialog [style]="{width: '50vw'}"></p-confirmDialog>
 
   <button pButton label="Back" class="p-button-secondary" (click)="goBack()">
     <i class="pi pi-arrow-left"></i>
@@ -7,12 +8,8 @@
   <div class="header flex align-items-center mb-4 justify-content-between">
     <div class="flex align-items-center">
       <!-- <h2 class="ml-3">{{ client?.companyName || "Client Details" }}</h2> -->
-      <img
-      class="mt-4"
-        src="{{ client.companyLogoBase64 }}"
-        alt="Company Logo"
-        style="margin-left: 20px; height: 50px; border-radius: 10%"
-      />
+      <img class="mt-4" src="{{ client.companyLogoBase64 }}" alt="Company Logo"
+        style="margin-left: 20px; height: 50px; border-radius: 10%" />
       <!-- <p-badge [value]="" severity="success" badgeSize="large" class="ml-2" *ngIf="client.status === 'ACTIVE'" pTooltip="Active User"/> -->
       <!-- <p-badge [value]="" severity="danger" badgeSize="large" class="ml-2" *ngIf="client.status !== 'ACTIVE'" pTooltip="Inactive User"/> -->
       <!-- <span *ngIf="candidate" [ngClass]="{
@@ -20,110 +17,317 @@
         'status-badge-inactive': candidate.status !== 'ACTIVE'
       }" style="font-size: 12px;">{{ candidate.status }}</span> -->
     </div>
-    <div class="resume-actions" hidden>
-      <button
-        pButton
-        type="button"
-        label="Download Logo"
-        icon="pi pi-download"
-        class="p-button-success"
-        (click)="downloadResume()"
-      ></button>
-      <button
-        pButton
-        type="button"
-        label="View Logo"
-        icon="pi pi-eye"
-        class="p-button-info"
-        (click)="viewResume()"
-      ></button>
-    </div>
+    <!-- Buttons moved to Contract Details section -->
   </div>
 
   <ng-container *ngIf="client; else loading">
     <div class="card section-card mb-4">
       <h3 (click)="togglePersonalInformation()" class="collapsible-header">
         Personal Information
-        <i
-          class="pi"
-          [ngClass]="{
+        <i class="pi" [ngClass]="{
             'pi-chevron-down': !showInformation,
             'pi-chevron-up': showInformation
-          }"
-        ></i>
+          }"></i>
       </h3>
 
       <div *ngIf="showInformation">
+        <!-- Client Name (Inline Edit) -->
         <div class="form-row">
           <label>Company Name:</label>
-          <div class="value">{{ client.companyName }}</div>
+          <div class="value clickable" (click)="enableEdit('companyName')" *ngIf="editingField !== 'companyName'">{{
+            client.companyName }}</div>
+          <div class="value" *ngIf="editingField === 'companyName'">
+            <input pInputText [(ngModel)]="tempValue" (blur)="saveEdit('companyName')"
+              (keydown.enter)="saveEdit('companyName')" autofocus class="w-full" />
+          </div>
         </div>
+
         <div class="form-row">
           <label>Company Email:</label>
-          <div class="value">{{ client.email }}</div>
+          <div class="value clickable" (click)="enableEdit('email')" *ngIf="editingField !== 'email'">{{ client.email }}
+          </div>
+          <div class="value" *ngIf="editingField === 'email'">
+            <input pInputText [(ngModel)]="tempValue" (blur)="saveEdit('email')" (keydown.enter)="saveEdit('email')"
+              class="w-full" />
+          </div>
         </div>
+
         <div class="form-row">
           <label>Company Contact:</label>
-          <div class="value">{{ client.contactNumber }}</div>
+          <div class="value clickable" (click)="enableEdit('contactNumber')" *ngIf="editingField !== 'contactNumber'">{{
+            client.contactNumber }}</div>
+          <div class="value" *ngIf="editingField === 'contactNumber'">
+            <input pInputText [(ngModel)]="tempValue" (blur)="saveEdit('contactNumber')"
+              (keydown.enter)="saveEdit('contactNumber')" class="w-full" />
+          </div>
         </div>
+
         <div class="form-row">
           <label>Company CEO:</label>
-          <div class="value">{{ client.ceoName }}</div>
+          <div class="value clickable" (click)="enableEdit('ceoName')" *ngIf="editingField !== 'ceoName'">{{
+            client.ceoName }}</div>
+          <div class="value" *ngIf="editingField === 'ceoName'">
+            <input pInputText [(ngModel)]="tempValue" (blur)="saveEdit('ceoName')" (keydown.enter)="saveEdit('ceoName')"
+              class="w-full" />
+          </div>
         </div>
+
         <div class="form-row">
           <label>Hiring Contact Number:</label>
-          <div class="value">{{ client.hiringContactPerson }}</div>
+          <div class="value clickable" (click)="enableEdit('hiringContactPerson')"
+            *ngIf="editingField !== 'hiringContactPerson'">{{ client.hiringContactPerson }}</div>
+          <div class="value" *ngIf="editingField === 'hiringContactPerson'">
+            <input pInputText [(ngModel)]="tempValue" (blur)="saveEdit('hiringContactPerson')"
+              (keydown.enter)="saveEdit('hiringContactPerson')" class="w-full" />
+          </div>
         </div>
+
         <div class="form-row">
           <label>Billing Contact number:</label>
-          <div class="value">{{ client.billingContactPerson }}</div>
+          <div class="value clickable" (click)="enableEdit('billingContactPerson')"
+            *ngIf="editingField !== 'billingContactPerson'">{{ client.billingContactPerson }}</div>
+          <div class="value" *ngIf="editingField === 'billingContactPerson'">
+            <input pInputText [(ngModel)]="tempValue" (blur)="saveEdit('billingContactPerson')"
+              (keydown.enter)="saveEdit('billingContactPerson')" class="w-full" />
+          </div>
         </div>
+
         <div class="form-row">
           <label>Company URL</label>
-          <div class="value">{{ client.companyUrl }}</div>
+          <div class="value clickable" (click)="enableEdit('companyUrl')" *ngIf="editingField !== 'companyUrl'">{{
+            client.companyUrl }}</div>
+          <div class="value" *ngIf="editingField === 'companyUrl'">
+            <input pInputText [(ngModel)]="tempValue" (blur)="saveEdit('companyUrl')"
+              (keydown.enter)="saveEdit('companyUrl')" class="w-full" />
+          </div>
         </div>
+
       </div>
     </div>
+
+    <div class="card section-card mb-4" *ngIf="showInformation">
+      <div class="flex justify-content-between align-items-center ">
+        <h3>Contract Details</h3>
+        <button pButton icon="pi pi-plus" label="New Contract" class="p-button-sm" (click)="addContract()"
+          [disabled]="isAddingContract"></button>
+      </div>
+
+
+      <!-- Add Contract Form -->
+      <div *ngIf="isAddingContract" class="mb-4 p-3 border-1 surface-border border-round relative surface-50">
+        <div class="text-xl font-bold mb-3">New Contract Details</div>
+
+        <div class="flex flex-column gap-3 mb-3">
+
+
+          <div class="form-row">
+            <label class="required">Contract Price:</label>
+            <div class="value">
+              <input pInputText type="number" [(ngModel)]="newContract.contractPrice" placeholder="Enter Amount"
+                class="w-full" />
+            </div>
+          </div>
+
+          <div class="form-row">
+            <label class="required">Contract Expiry Date:</label>
+            <div class="value">
+              <p-datepicker [(ngModel)]="newContract.contractExpiryDate" appendTo="body" [showIcon]="true"
+                [showOnFocus]="false"></p-datepicker>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <label>Is Closed Ended:</label>
+            <div class="value">
+              <p-checkbox [(ngModel)]="newContract.isClosedEnded" [binary]="true"></p-checkbox>
+            </div>
+          </div>
+
+          <div class="form-row" *ngIf="newContract.isClosedEnded">
+            <label class="required">Contract Expired Message:</label>
+            <div class="value">
+              <textarea pInputTextarea [(ngModel)]="newContract.contractExpiredMessage" class="w-full"
+                rows="3"></textarea>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <label>Contract Document:</label>
+            <div class="value">
+              <div
+                class="flex align-items-center justify-content-between p-3 surface-0 border-round border-1 surface-border"
+                *ngIf="newContract.contractBase64">
+                <div class="flex align-items-center gap-3">
+                  <div class="bg-gray-100 p-2 border-circle flex align-items-center justify-content-center"
+                    style="width: 40px; height: 40px;">
+                    <i class="pi pi-file-pdf text-red-500 text-xl"></i>
+                  </div>
+                  <div class="flex flex-column">
+                    <span class="font-semibold text-color">{{ newContract.name || 'Contract Document' }}</span>
+                  </div>
+                </div>
+                <button pButton icon="pi pi-trash" class="p-button-rounded p-button-text p-button-danger"
+                  (click)="newContract.contractBase64 = null" pTooltip="Remove"></button>
+              </div>
+
+              <div class="mt-2" *ngIf="!newContract.contractBase64">
+                <p-fileUpload mode="basic" chooseLabel="Upload Document" chooseIcon="pi pi-upload" name="file" url=""
+                  accept=".pdf,.doc,.docx" maxFileSize="1000000" (onSelect)="onNewContractUpload($event)" [auto]="true"
+                  styleClass="w-full"></p-fileUpload>
+              </div>
+            </div>
+          </div>
+
+          <div class="flex justify-content-end gap-2 mt-3">
+            <button pButton label="Cancel" class="p-button-secondary" (click)="cancelAddContract()"></button>
+            <button pButton label="Add" class="p-button-primary" (click)="saveNewContract()"></button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Existing Contracts List -->
+      <div *ngFor="let contract of contracts; let i = index"
+        class="mb-4 p-3 border-1 surface-border border-round relative">
+        <div class="flex justify-content-between align-items-center mb-2">
+          <div class="flex align-items-center gap-2" class="w-full">
+            <div class="clickable font-bold text-xl" (click)="enableContractEdit(i, 'name')"
+              *ngIf="editingContractIndex !== i || editingField !== 'name'">
+              {{ contract.name || 'Contract ' + (i + 1) }}
+              <i class="pi pi-pencil text-gray-500 text-sm ml-2"></i>
+            </div>
+            <div *ngIf="editingContractIndex === i && editingField === 'name'" class="w-full mr-3">
+              <input pInputText [(ngModel)]="tempValue" (blur)="saveContractEdit(i, 'name')"
+                (keydown.enter)="saveContractEdit(i, 'name')" class="w-full" autofocus />
+            </div>
+          </div>
+          <button pButton icon="pi pi-trash" class="p-button-danger p-button-text p-button-rounded"
+            (click)="deleteContract(i)" pTooltip="Delete Contract"></button>
+        </div>
+
+        <div *ngIf="contract.expiryWarning"
+          class="p-3 mb-3 border-round bg-yellow-100 text-yellow-900 flex align-items-center">
+          <i class="pi pi-exclamation-triangle mr-2 text-xl"></i>
+          <div class="flex flex-column">
+            <span class="font-bold">This contract is about to expire in {{ contract.expiryWarning }}.</span>
+            <span *ngIf="contract.contractExpiredMessage" class="mt-1">{{ contract.contractExpiredMessage }}</span>
+          </div>
+        </div>
+
+        <div class="flex flex-column gap-3 mb-3">
+          <div class="form-row">
+            <label>Contract Price:</label>
+            <div class="value clickable" (click)="enableContractEdit(i, 'contractPrice')"
+              *ngIf="editingContractIndex !== i || editingField !== 'contractPrice'">
+              {{ contract.contractPrice ? (contract.contractPrice | currency:'NPR':'Rs. ') : 'Click to add price' }}
+            </div>
+            <div class="value" *ngIf="editingContractIndex === i && editingField === 'contractPrice'">
+              <input pInputText type="number" [(ngModel)]="tempValue" (blur)="saveContractEdit(i, 'contractPrice')"
+                (keydown.enter)="saveContractEdit(i, 'contractPrice')" class="w-full" />
+            </div>
+          </div>
+
+          <div class="form-row">
+            <label>Contract Expiry Date:</label>
+            <div class="value clickable" (click)="enableContractEdit(i, 'contractExpiryDate')"
+              *ngIf="editingContractIndex !== i || editingField !== 'contractExpiryDate'">
+              {{ contract.contractExpiryDate ? (contract.contractExpiryDate | date:'mediumDate') : 'Click to set date'
+              }}
+            </div>
+            <div class="value" *ngIf="editingContractIndex === i && editingField === 'contractExpiryDate'">
+              <p-datepicker [(ngModel)]="tempValue" (onSelect)="saveContractEdit(i, 'contractExpiryDate')"
+                appendTo="body" [showIcon]="true" [showOnFocus]="false"></p-datepicker>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <label>Is Closed Ended:</label>
+            <div class="value">
+              <p-checkbox [(ngModel)]="contract.isClosedEnded" [binary]="true"
+                (onChange)="onContractClosedEndedChange($event, i)"></p-checkbox>
+            </div>
+          </div>
+
+          <div class="form-row" *ngIf="contract.isClosedEnded">
+            <label class="required">Contract Expired Message:</label>
+            <div class="value clickable" (click)="enableContractEdit(i, 'contractExpiredMessage')"
+              *ngIf="editingContractIndex !== i || editingField !== 'contractExpiredMessage'">
+              {{ contract.contractExpiredMessage || 'Click to add message' }}
+            </div>
+            <div class="value" *ngIf="editingContractIndex === i && editingField === 'contractExpiredMessage'">
+              <textarea pInputTextarea [(ngModel)]="tempValue" (blur)="saveContractEdit(i, 'contractExpiredMessage')"
+                class="w-full" rows="3"></textarea>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <label>Contract Document:</label>
+            <div class="value">
+              <div
+                class="flex align-items-center justify-content-between p-3 surface-50 border-round border-1 surface-border"
+                *ngIf="contract.contractBase64">
+                <div class="flex align-items-center gap-3">
+                  <div class="bg-white p-2 border-circle shadow-1 flex align-items-center justify-content-center"
+                    style="width: 40px; height: 40px;">
+                    <i class="pi pi-file-pdf text-red-500 text-xl"></i>
+                  </div>
+                  <div class="flex flex-column">
+                    <span class="font-semibold text-color">{{ contract.name || 'Contract Document' }}</span>
+                    <small class="text-gray-500" *ngIf="contract.uploadDate">Uploaded on {{ contract.uploadDate |
+                      date:'mediumDate' }}</small>
+                  </div>
+                </div>
+                <div class="flex align-items-center gap-2">
+                  <button pButton icon="pi pi-eye" class="p-button-text p-button-secondary p-button-rounded"
+                    (click)="viewContract(contract)" pTooltip="View Document"></button>
+                  <button pButton icon="pi pi-download" class="p-button-text p-button-secondary p-button-rounded"
+                    (click)="downloadContract(contract)" pTooltip="Download Document"></button>
+                  <p-fileUpload mode="basic" chooseIcon="pi pi-pencil" class="p-button-rounded p-button-text"
+                    [chooseLabel]="''" name="file" url="" accept=".pdf,.doc,.docx" maxFileSize="1000000"
+                    (onSelect)="onContractUpload($event, i)" [auto]="true" pTooltip="Replace Document"></p-fileUpload>
+                </div>
+              </div>
+
+              <div class="mt-2" *ngIf="!contract.contractBase64">
+                <p-fileUpload mode="basic" chooseLabel="Upload Document" chooseIcon="pi pi-upload" name="file" url=""
+                  accept=".pdf,.doc,.docx" maxFileSize="1000000" (onSelect)="onContractUpload($event, i)" [auto]="true"
+                  styleClass="w-full"></p-fileUpload>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div *ngIf="contracts.length === 0 && !isAddingContract"
+        class="text-center p-4 border-1 surface-border border-round text-gray-500">
+        No contracts added. Click "New Contract" to start.
+      </div>
+    </div>
+
+
   </ng-container>
 
   <ng-template #loading>
     <p>Loading client details...</p>
   </ng-template>
 
-  <p-dialog
-    header="Logo Preview"
-    [(visible)]="displayResumeModal"
-    [modal]="true"
-    [closable]="true"
-    [resizable]="true"
-    [draggable]="false"
-    [style]="{
-      width: '95vw',
-      maxWidth: '95vw',
-      height: '95vh',
-      maxHeight: '95vh',
-      padding: '0'
-    }"
-    [contentStyle]="{
-      height: 'calc(95vh - 50px)',
-      overflow: 'auto',
-      padding: '0'
-    }"
-  >
+  <p-dialog header="Logo Preview" [(visible)]="displayResumeModal" [modal]="true" [closable]="true" [resizable]="true"
+    [draggable]="false" [style]="{ width: '95vw', maxWidth: '95vw', height: '95vh', maxHeight: '95vh', padding: '0' }"
+    [contentStyle]="{ height: 'calc(95vh - 50px)', overflow: 'auto', padding: '0' }">
     <ng-container *ngIf="resumeSrc">
-      <iframe
-        *ngIf="resumeMimeType === 'application/pdf'"
-        [src]="resumeSrc | safe"
-        width="100%"
-        height="100%"
-        style="border: none"
-      ></iframe>
-      <img
-        *ngIf="resumeMimeType.startsWith('image/')"
-        [src]="resumeSrc"
-        width="100%"
-        style="height: 100%; object-fit: contain; display: block; margin: auto"
-      />
+      <iframe *ngIf="resumeMimeType === 'application/pdf'" [src]="resumeSrc | safe" width="100%" height="100%"
+        style="border:none;"></iframe>
+      <img *ngIf="resumeMimeType.startsWith('image/')" [src]="resumeSrc" width="100%"
+        style="height:100%; object-fit:contain; display:block; margin:auto;" />
+    </ng-container>
+  </p-dialog>
+
+  <p-dialog header="Contract Preview" [(visible)]="displayContractModal" [modal]="true" [closable]="true"
+    [resizable]="true" [draggable]="false"
+    [style]="{ width: '95vw', maxWidth: '95vw', height: '95vh', maxHeight: '95vh', padding: '0' }"
+    [contentStyle]="{ height: 'calc(95vh - 50px)', overflow: 'auto', padding: '0' }">
+    <ng-container *ngIf="contractSrc">
+      <iframe *ngIf="contractSrc.startsWith('data:application/pdf')" [src]="contractSrc | safe" width="100%"
+        height="100%" style="border:none;"></iframe>
     </ng-container>
   </p-dialog>
 </div>
