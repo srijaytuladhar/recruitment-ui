@@ -4,15 +4,15 @@ import { Dashboard } from './component/dashboard/dashboard';
 import { ViewCandidate } from './component/candidate/view-candidate/view-candidate';
 import { CreateCandidate } from './component/candidate/create-candidate/create-candidate';
 import { CandidateProceedFurtherComponent } from './component/candidate/candidate-proceed-further/candidate-proceed-further';
-import {ViewClientDetailsComponent} from './component/client-details/view-client-details/view-client-details.component';
+import { ViewClientDetailsComponent } from './component/client-details/view-client-details/view-client-details.component';
 import {
   CreateClientDetailsComponent
 } from './component/client-details/create-client-details/create-client-details.component';
-import {ClientDetailsComponent} from './component/client-details/client-details.component';
-import {JobDetailsComponent} from './component/job-details/job-details.component';
-import {ViewJobDetailsComponent} from './component/job-details/view-job-details/view-job-details.component';
-import {CreateJobDetailsComponent} from './component/job-details/create-job-details/create-job-details.component';
-import {JobMapperComponent} from './component/job-mapper/job-mapper.component';
+import { ClientDetailsComponent } from './component/client-details/client-details.component';
+import { JobDetailsComponent } from './component/job-details/job-details.component';
+import { ViewJobDetailsComponent } from './component/job-details/view-job-details/view-job-details.component';
+import { CreateJobDetailsComponent } from './component/job-details/create-job-details/create-job-details.component';
+import { JobMapperComponent } from './component/job-mapper/job-mapper.component';
 
 export const routes: Routes = [
   { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
@@ -26,6 +26,8 @@ export const routes: Routes = [
   { path: 'candidates/view/:id', component: ViewCandidate },
   { path: 'candidates/create', component: CreateCandidate },
   { path: 'candidates/proceed/:id', component: CandidateProceedFurtherComponent },
+  { path: 'workflow/pre-screening/:id', component: CandidateProceedFurtherComponent },
+  { path: 'workflow/proceed-further/:id/:jobId', component: CandidateProceedFurtherComponent },
   { path: 'job-mapper', component: JobMapperComponent },
   { path: 'dashboard', component: Dashboard },
   { path: '**', redirectTo: 'dashboard' },

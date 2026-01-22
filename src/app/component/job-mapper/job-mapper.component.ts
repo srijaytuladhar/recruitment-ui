@@ -1,24 +1,24 @@
-import {ChangeDetectorRef, Component, OnInit} from '@angular/core';
-import {ButtonModule} from 'primeng/button';
-import {DialogModule} from 'primeng/dialog';
-import {IconFieldModule} from 'primeng/iconfield';
-import {InputIconModule} from 'primeng/inputicon';
-import {InputTextModule} from 'primeng/inputtext';
-import {Menu} from 'primeng/menu';
-import {CommonModule} from '@angular/common';
-import {MessageService} from 'primeng/api';
-import {SafePipe} from '../../config/safe.pipe';
-import {Select} from 'primeng/select';
-import {TableModule} from 'primeng/table';
-import {Tooltip} from 'primeng/tooltip';
-import {ActivatedRoute, Router} from '@angular/router';
-import {CandidateService} from '../../services/candidate.service';
-import {UtilService} from '../../services/util.service';
-import {FormsModule, ReactiveFormsModule} from '@angular/forms';
-import {HttpClientModule} from '@angular/common/http';
-import {TagModule} from 'primeng/tag';
-import {SplitButtonModule} from 'primeng/splitbutton';
-import {JobMapperService} from '../../services/jobMapper.service';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import { ButtonModule } from 'primeng/button';
+import { DialogModule } from 'primeng/dialog';
+import { IconFieldModule } from 'primeng/iconfield';
+import { InputIconModule } from 'primeng/inputicon';
+import { InputTextModule } from 'primeng/inputtext';
+import { Menu } from 'primeng/menu';
+import { CommonModule } from '@angular/common';
+import { MessageService } from 'primeng/api';
+import { SafePipe } from '../../config/safe.pipe';
+import { Select } from 'primeng/select';
+import { TableModule } from 'primeng/table';
+import { Tooltip } from 'primeng/tooltip';
+import { ActivatedRoute, Router } from '@angular/router';
+import { CandidateService } from '../../services/candidate.service';
+import { UtilService } from '../../services/util.service';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { HttpClientModule } from '@angular/common/http';
+import { TagModule } from 'primeng/tag';
+import { SplitButtonModule } from 'primeng/splitbutton';
+import { JobMapperService } from '../../services/jobMapper.service';
 import { Location } from '@angular/common';
 
 @Component({
@@ -46,7 +46,7 @@ import { Location } from '@angular/common';
   styleUrls: ['./job-mapper.component.css'],
   providers: [CandidateService, UtilService, MessageService, JobMapperService],
 })
-export class JobMapperComponent implements OnInit{
+export class JobMapperComponent implements OnInit {
   candidateList: any[] = [];
   displayResumeModal = false;
   resumeSrc: string = '';
@@ -58,11 +58,12 @@ export class JobMapperComponent implements OnInit{
     { label: 'Working', value: 'WORKING' },
     { label: 'Not Looking', value: 'NOT_LOOKING' }
   ];
+  candidateJobProcesses: Map<string, any> = new Map();
   jobId: string | null = null;
   itemsTemplate = [
     { label: 'Edit', icon: 'pi pi-refresh', command: (candidate: any) => console.log('Edit', candidate) },
     { label: 'View', icon: 'pi pi-eye', command: (candidate: any) => this.router.navigate(['candidates/view', candidate.id]) },
-    { label: 'Proceed Further', icon: 'pi pi-forward', command: (candidate: any) => this.router.navigate(['candidates/proceed', candidate.id]) },
+    { label: 'Proceed Further', icon: 'pi pi-forward', command: (candidate: any) => this.router.navigate(['workflow/proceed-further', candidate.id, this.jobId]) },
     { label: 'Quit', icon: 'pi pi-power-off', command: () => window.open('https://angular.io/', '_blank') },
   ];
 
@@ -74,13 +75,14 @@ export class JobMapperComponent implements OnInit{
     private cd: ChangeDetectorRef,
     private jobMapperService: JobMapperService,
     private location: Location
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.route.queryParams.subscribe(params => {
       this.jobId = params['jobId'] || null;
       if (this.jobId) {
         this.fetchJobMapperAndCandidates(this.jobId);
+        this.fetchJobProcesses(this.jobId);
       }
     });
   }
@@ -126,6 +128,23 @@ export class JobMapperComponent implements OnInit{
           true
         )
     });
+  }
+
+  fetchJobProcesses(jobId: string) {
+    this.service.getJobProcessesByJob(jobId).subscribe({
+      next: (res) => {
+        const processes = res.data || [];
+        processes.forEach((p: any) => {
+          this.candidateJobProcesses.set(p.candidateId, p);
+        });
+      },
+      error: (err) => console.error('Failed to fetch job processes', err)
+    });
+  }
+
+  isCandidateSelected(candidateId: string): boolean {
+    const process = this.candidateJobProcesses.get(candidateId);
+    return process?.status === 'COMPLETED';
   }
 
 

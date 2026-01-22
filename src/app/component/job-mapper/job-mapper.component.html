@@ -10,36 +10,20 @@
     <div class="flex gap-2">
       <p-iconfield style="flex: 1;">
         <p-inputicon class="pi pi-search"></p-inputicon>
-        <input
-          type="text"
-          pInputText
-          placeholder="Search candidates"
-          (input)="dt1.filterGlobal($event.target.value, 'contains')"
-        />
+        <input type="text" pInputText placeholder="Search candidates"
+          (input)="dt1.filterGlobal($event.target.value, 'contains')" />
       </p-iconfield>
 
-      <p-select
-        [options]="workStatus"
-        optionLabel="label"
-        optionValue="value"
-        placeholder="Work Status"
-        style="flex: 1; min-width: 0;"
-        [(ngModel)]="selectedWorkStatus"
-        (onChange)="dt1.filter($event.value, 'workStatus', 'equals')"
-      ></p-select>
+      <p-select [options]="workStatus" optionLabel="label" optionValue="value" placeholder="Work Status"
+        style="flex: 1; min-width: 0;" [(ngModel)]="selectedWorkStatus"
+        (onChange)="dt1.filter($event.value, 'workStatus', 'equals')"></p-select>
     </div>
   </div>
 
   <div class="table-responsive">
-    <p-table
-      #dt1
-      [value]="candidateList"
-      [paginator]="true"
-      [rows]="10"
-      [rowsPerPageOptions]="[10, 25, 50]"
+    <p-table #dt1 [value]="candidateList" [paginator]="true" [rows]="10" [rowsPerPageOptions]="[10, 25, 50]"
       [globalFilterFields]="['name','currentAddress','emailAddress','contactNumber','jobLocationDesired','jobVertical','totalYearsOfExperience']"
-      [scrollable]="true"
-      [responsiveLayout]="'scroll'">
+      [scrollable]="true" [responsiveLayout]="'scroll'">
 
       <ng-template pTemplate="header">
         <tr>
@@ -73,22 +57,16 @@
       <ng-template pTemplate="body" let-candidate>
         <tr (click)="navigateToView(candidate.id)" class="tr-hover">
           <td (click)="$event.stopPropagation()">
-            <button
-              pButton
-              type="button"
-              icon="pi pi-cog"
-              class="p-button-rounded p-button-text"
-              (click)="menu.toggle($event)"
-            ></button>
-            <p-menu
-              #menu
-              [popup]="true"
-              [model]="candidate.items"
-              appendTo="body"
-            ></p-menu>
+            <button pButton type="button" icon="pi pi-cog" class="p-button-rounded p-button-text"
+              (click)="menu.toggle($event)"></button>
+            <p-menu #menu [popup]="true" [model]="candidate.items" appendTo="body"></p-menu>
           </td>
           <td>
-            <div class="truncate-text">{{ candidate.name }}</div>
+            <div class="truncate-text">
+              {{ candidate.name }}
+              <p-tag *ngIf="isCandidateSelected(candidate.id)" icon="pi pi-star-fill" value="Selected"
+                severity="success" class="ml-2"></p-tag>
+            </div>
           </td>
           <td>
             <div class="truncate-text">{{ candidate.emailAddress }}</div>
@@ -106,21 +84,14 @@
             <div class="truncate-text">{{ candidate.totalYearsOfExperience }}</div>
           </td>
           <td>
-            <span
-              class="status-badge"
-              [ngClass]="getWorkStatusClass(candidate.workStatus)">
+            <span class="status-badge" [ngClass]="getWorkStatusClass(candidate.workStatus)">
               {{ candidate.workStatus ? getWorkStatusLabel(candidate.workStatus) : 'N/A' }}
             </span>
           </td>
           <td (click)="$event.stopPropagation()">
-            <button
-              pButton
-              type="button"
-              [icon]="candidate.resumeBase64 ? 'pi pi-eye' : 'pi pi-eye-slash'"
-              class="p-button-text p-button-sm resume-btn"
-              [disabled]="!candidate.resumeBase64"
-              pTooltip="{{ !candidate.resumeBase64 ? 'No resume found' : '' }}"
-              tooltipPosition="top"
+            <button pButton type="button" [icon]="candidate.resumeBase64 ? 'pi pi-eye' : 'pi pi-eye-slash'"
+              class="p-button-text p-button-sm resume-btn" [disabled]="!candidate.resumeBase64"
+              pTooltip="{{ !candidate.resumeBase64 ? 'No resume found' : '' }}" tooltipPosition="top"
               (click)="viewResumes(candidate)">
             </button>
           </td>
@@ -137,26 +108,13 @@
 </div>
 
 <!-- Resume Preview Modal -->
-<p-dialog
-  header="Resume Preview"
-  [(visible)]="displayResumeModal"
-  [modal]="true"
-  [closable]="true"
-  [resizable]="true"
-  [draggable]="false"
-  [style]="{ width: '95vw', maxWidth: '95vw', height: '95vh', maxHeight: '95vh', padding: '0' }"
+<p-dialog header="Resume Preview" [(visible)]="displayResumeModal" [modal]="true" [closable]="true" [resizable]="true"
+  [draggable]="false" [style]="{ width: '95vw', maxWidth: '95vw', height: '95vh', maxHeight: '95vh', padding: '0' }"
   [contentStyle]="{ height: 'calc(95vh - 50px)', overflow: 'auto', padding: '0' }">
   <ng-container *ngIf="resumeSrc">
-    <iframe
-      *ngIf="resumeMimeType === 'application/pdf'"
-      [src]="resumeSrc | safe"
-      width="100%"
-      height="100%"
+    <iframe *ngIf="resumeMimeType === 'application/pdf'" [src]="resumeSrc | safe" width="100%" height="100%"
       style="border:none;"></iframe>
-    <img
-      *ngIf="resumeMimeType.startsWith('image/')"
-      [src]="resumeSrc"
-      width="100%"
-      style="height:100%; object-fit:contain; display:block; margin:auto;"/>
+    <img *ngIf="resumeMimeType.startsWith('image/')" [src]="resumeSrc" width="100%"
+      style="height:100%; object-fit:contain; display:block; margin:auto;" />
   </ng-container>
 </p-dialog>

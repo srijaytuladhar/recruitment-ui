@@ -13,14 +13,15 @@ import { animate, state, style, transition, trigger } from '@angular/animations'
 
 import { CandidateService } from '../../../services/candidate.service';
 import { UtilService } from '../../../services/util.service';
-import {Location, NgIf} from '@angular/common';
-import {Badge} from 'primeng/badge';
-import {Tooltip} from 'primeng/tooltip';
-import {Textarea} from 'primeng/textarea';
+import { Location, NgIf } from '@angular/common';
+import { Badge } from 'primeng/badge';
+import { Tooltip } from 'primeng/tooltip';
+import { Textarea } from 'primeng/textarea';
 
 interface CandidateProcess {
   id?: string;
   candidateId?: string;
+  jobId?: string;
   resumeSource?: string;
   detailEntryNotes?: string;
   interviewMode?: any;
@@ -41,6 +42,7 @@ interface CandidateProcess {
   offerStartDate?: Date;
   currentStep?: number;
   status?: 'IN_PROGRESS' | 'COMPLETED';
+  workingStatus?: string;
 }
 
 @Component({
@@ -78,11 +80,21 @@ export class CandidateProceedFurtherComponent implements OnInit {
   process: CandidateProcess = {};
   currentStep: number = 1;
   candidateId?: string;
+  jobId?: string;
 
   interviewModes = [
     { label: 'Virtual', value: 'Virtual' },
     { label: 'In Person', value: 'In Person' }
   ];
+
+  workStatuses = [
+    { label: 'Open to Work', value: 'OPEN_TO_WORK' },
+    { label: 'Working', value: 'WORKING' },
+    { label: 'Not Looking', value: 'NOT_LOOKING' }
+  ];
+
+  candidateName: string = '';
+  flowType: 'PRE_SCREENING' | 'PROCEED_FURTHER' = 'PRE_SCREENING';
 
   constructor(
     private router: Router,
@@ -90,61 +102,126 @@ export class CandidateProceedFurtherComponent implements OnInit {
     private service: CandidateService,
     private util: UtilService,
     private location: Location
-  ) {}
+  ) { }
 
   ngOnInit(): void {
-    this.candidateId = this.route.snapshot.paramMap.get('id') || undefined;
-
-    if (this.candidateId) {
-      this.service.getByCandidateProcessById(this.candidateId).subscribe({
-        next: res => {
-          this.process = res.data || {};
-          this.convertDatesToObjects();
-          if (this.process.status === 'COMPLETED') {
-            this.currentStep = 7;
-          } else {
-            this.currentStep = this.process.currentStep || 1;
-          }
-        },
-        error: () => this.util.toastr('Failed to fetch candidate process', true)
-      });
+    const url = this.router.url;
+    if (url.includes('proceed-further')) {
+      this.flowType = 'PROCEED_FURTHER';
+    } else {
+      this.flowType = 'PRE_SCREENING';
     }
 
-    setTimeout(() => {
-      if (!this.currentStep) this.currentStep = 1;
-    });
+    this.candidateId = this.route.snapshot.paramMap.get('id') || undefined;
+    const jobId = this.route.snapshot.paramMap.get('jobId') || undefined;
+
+    if (this.candidateId) {
+      this.service.fetchCandidateById(this.candidateId).subscribe({
+        next: res => {
+          if (res.data) {
+            this.candidateName = res.data.name || `${res.data.firstName || ''} ${res.data.lastName || ''}`.trim();
+
+            if (res.data.workStatus) {
+              this.process.workingStatus = res.data.workStatus;
+            }
+          }
+        },
+        error: () => console.error('Failed to fetch candidate details')
+      });
+
+      if (this.flowType === 'PROCEED_FURTHER' && jobId) {
+        const preScreening$ = this.service.getPreScreening(this.candidateId);
+        const jobProcess$ = this.service.getJobProcess(this.candidateId, jobId);
+
+        import('rxjs').then(({ forkJoin }) => {
+          forkJoin([preScreening$, jobProcess$]).subscribe({
+            next: ([preRes, jobRes]) => {
+              console.log('Pre-Screening Data:', preRes.data);
+              console.log('Job Process Data:', jobRes.data);
+
+              this.process = { ...preRes.data, ...jobRes.data };
+
+              this.process.jobId = jobId;
+
+
+              this.service.fetchCandidateById(this.candidateId!).subscribe(cRes => {
+                if (cRes.data && cRes.data.workStatus) {
+                  this.process.workingStatus = cRes.data.workStatus;
+                }
+              });
+
+
+              console.log('Merged Process Data:', this.process);
+              this.convertDatesToObjects();
+
+              if (this.process.status?.toUpperCase() === 'COMPLETED') {
+                this.currentStep = 0;
+              } else {
+                this.currentStep = (this.process.currentStep && this.process.currentStep >= 5) ? this.process.currentStep : 5;
+              }
+            },
+            error: (err) => {
+              console.error('Fetch error:', err);
+              this.util.toastr('Failed to fetch candidate process', true);
+            }
+          });
+        });
+
+      } else {
+        this.service.getPreScreening(this.candidateId).subscribe({
+          next: res => {
+            console.log('API Response:', res);
+            this.process = res.data || {};
+            this.convertDatesToObjects();
+
+            if (this.process.status?.toUpperCase() === 'COMPLETED') {
+              this.currentStep = 0;
+            } else {
+              this.currentStep = (this.process.currentStep && this.process.currentStep >= 4) ? 4 : (this.process.currentStep || 1);
+            }
+          },
+          error: (err) => {
+            console.error('Fetch error:', err);
+            this.util.toastr('Failed to fetch candidate process', true);
+          }
+        });
+      }
+    }
   }
 
   goBack() {
     this.location.back();
   }
 
-  saveAndNext(activateCallback: any, nextStep: number) {
+  saveAndNext(activateCallback: any, nextStep: number, customStatus?: 'IN_PROGRESS' | 'COMPLETED') {
     if (!this.isStepValid(this.currentStep)) {
       this.util.toastr('Please complete all required fields.', true);
       return;
     }
 
     this.process.currentStep = nextStep;
-    this.process.status = 'IN_PROGRESS';
+    this.process.status = customStatus || 'IN_PROGRESS';
     this.process.candidateId = this.candidateId;
 
-    if (this.process.interviewMode) {
 
-    console.log(this.process.interviewMode);
-    console.log(this.process.interviewMode.value)
-      this.process.interviewMode = this.process.interviewMode.value;
-    }
-    const request$ = this.process.id
-      ? this.service.updateCandidateProcess(this.process.id, this.process)
-      : this.service.createCandidateProcess(this.process);
+    const request$ = this.flowType === 'PROCEED_FURTHER'
+      ? this.service.saveJobProcess(this.process)
+      : this.service.savePreScreening(this.process);
 
     request$.subscribe({
       next: res => {
         this.process = res.data;
+        this.convertDatesToObjects();
         this.currentStep = nextStep;
         activateCallback(nextStep);
-        this.util.toastr(`Step ${nextStep - 1} saved successfully!`, false);
+
+        const isCompleted = this.process.status?.toUpperCase() === 'COMPLETED';
+        if (isCompleted) {
+          this.currentStep = 0;
+          this.util.toastr('Candidate Pre-Screening Completed!', false);
+        } else {
+          this.util.toastr(`Step ${nextStep - 1} saved successfully!`, false);
+        }
       },
       error: () => this.util.toastr('Failed to save this step', true)
     });
@@ -159,17 +236,23 @@ export class CandidateProceedFurtherComponent implements OnInit {
     this.process.status = 'COMPLETED';
     this.process.currentStep = this.currentStep;
 
-    const request$ = this.process.id
-      ? this.service.updateCandidateProcess(this.process.id, this.process)
-      : this.service.createCandidateProcess(this.process);
+    const request$ = this.flowType === 'PROCEED_FURTHER'
+      ? this.service.saveJobProcess(this.process)
+      : this.service.savePreScreening(this.process);
 
     request$.subscribe({
       next: () => {
-        this.util.toastr('Candidate process completed successfully!', false);
-        this.router.navigate(['/candidates']);
+        const message = this.flowType === 'PROCEED_FURTHER' ? 'Candidate Selected!' : 'Candidate process completed successfully!';
+        this.util.toastr(message, false);
+        this.currentStep = 0;
       },
       error: () => this.util.toastr('Failed to complete the process', true)
     });
+  }
+
+  getWorkStatusLabel(value?: string): string {
+    const status = this.workStatuses.find(s => s.value === value);
+    return status ? status.label : 'N/A';
   }
 
   private isStepValid(step: number): boolean {

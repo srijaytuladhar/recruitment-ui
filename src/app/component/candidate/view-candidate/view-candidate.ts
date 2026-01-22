@@ -1,7 +1,7 @@
 import { ChangeDetectorRef, Component, NgZone, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ButtonModule } from 'primeng/button';
-import {CommonModule, Location} from '@angular/common';
+import { CommonModule, Location } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 import { InputTextModule } from 'primeng/inputtext';
@@ -13,7 +13,7 @@ import { MessageService } from 'primeng/api';
 import { SafePipe } from '../../../config/safe.pipe';
 import { AccordionModule } from 'primeng/accordion';
 import { Badge } from "primeng/badge";
-import {Tooltip} from 'primeng/tooltip';
+import { Tooltip } from 'primeng/tooltip';
 
 
 @Component({
@@ -32,7 +32,7 @@ import {Tooltip} from 'primeng/tooltip';
     AccordionModule,
     Badge,
     Tooltip
-],
+  ],
   providers: [CandidateService, UtilService, MessageService],
   templateUrl: './view-candidate.html',
   styleUrls: ['./view-candidate.css']
@@ -55,7 +55,7 @@ export class ViewCandidate implements OnInit {
     private ngZone: NgZone,
     private cd: ChangeDetectorRef,
     private location: Location
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.fetchCandidate();
@@ -80,7 +80,6 @@ export class ViewCandidate implements OnInit {
             }
           }
 
-          // Trigger view update
           this.cd.detectChanges();
         } else {
           this.util.toastr(res.message || 'Candidate not found', true);
@@ -141,6 +140,12 @@ export class ViewCandidate implements OnInit {
   }
   navigateTo(id: string) {
     this.router.navigate(['candidates/proceed', id]);
+  }
+
+  navigateToPreScreening() {
+    if (this.candidate && this.candidate.id) {
+      this.router.navigate(['workflow/pre-screening', this.candidate.id]);
+    }
   }
 
 

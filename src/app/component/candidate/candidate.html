@@ -1,7 +1,8 @@
 <div class="card">
   <div class="header flex justify-content-between align-items-center mb-2">
     <h2>List of Candidates</h2>
-    <p-button *ngIf="!isJobContext" label="Create Profile" [raised]="true" severity="success" (click)="navigateTo('candidates/create')">
+    <p-button *ngIf="!isJobContext" label="Create Profile" [raised]="true" severity="success"
+      (click)="navigateTo('candidates/create')">
       <i class="pi pi-plus"></i>
     </p-button>
     <button pButton label="Back" *ngIf="isJobContext" class="p-button-secondary back-btn" (click)="goBack()">
@@ -13,40 +14,21 @@
     <div class="flex gap-2">
       <p-iconfield style="flex: 1;">
         <p-inputicon class="pi pi-search"></p-inputicon>
-        <input
-          type="text"
-          pInputText
-          placeholder="Search candidates"
-          (input)="dt1.filterGlobal($event.target.value, 'contains')"
-        />
+        <input type="text" pInputText placeholder="Search candidates"
+          (input)="dt1.filterGlobal($event.target.value, 'contains')" />
       </p-iconfield>
 
-      <p-select
-        [options]="workStatus"
-        optionLabel="label"
-        optionValue="value"
-        placeholder="Work Status"
-        style="flex: 1; min-width: 0;"
-        [(ngModel)]="selectedWorkStatus"
-      (onChange)="dt1.filter($event.value, 'workStatus', 'equals')"
-      ></p-select>
+      <p-select [options]="workStatus" optionLabel="label" optionValue="value" placeholder="Work Status"
+        style="flex: 1; min-width: 0;" [(ngModel)]="selectedWorkStatus"
+        (onChange)="dt1.filter($event.value, 'workStatus', 'equals')"></p-select>
     </div>
   </div>
 
   <div class="table-responsive">
-    <p-table
-      #dt1
-      [value]="candidateList"
-      [paginator]="true"
-      [rows]="10"
-      [rowsPerPageOptions]="[10, 25, 50]"
+    <p-table #dt1 [value]="candidateList" [paginator]="true" [rows]="10" [rowsPerPageOptions]="[10, 25, 50]"
       [globalFilterFields]="['name','currentAddress','emailAddress','contactNumber','jobLocationDesired','jobVertical','totalYearsOfExperience']"
-      [scrollable]="true"
-      [responsiveLayout]="'scroll'"
-      [(selection)]="selectedCandidates"
-      [rowHover]="true"
-      dataKey="id"
-      selectionMode="multiple">
+      [scrollable]="true" [responsiveLayout]="'scroll'" [(selection)]="selectedCandidates" [rowHover]="true"
+      dataKey="id" selectionMode="multiple">
 
       <ng-template pTemplate="header">
         <tr>
@@ -81,20 +63,10 @@
 
       <ng-template pTemplate="body" let-candidate>
         <tr (click)="navigateToView(candidate.id)" class="tr-hover">
-          <td *ngIf="!isJobContext" (click)="$event.stopPropagation()" >
-            <button
-              pButton
-              type="button"
-              icon="pi pi-cog"
-              class="p-button-rounded p-button-text"
-              (click)="menu.toggle($event)"
-            ></button>
-            <p-menu
-              #menu
-              [popup]="true"
-              [model]="candidate.items"
-              appendTo="body"
-            ></p-menu>
+          <td *ngIf="!isJobContext" (click)="$event.stopPropagation()">
+            <button pButton type="button" icon="pi pi-cog" class="p-button-rounded p-button-text"
+              (click)="menu.toggle($event)"></button>
+            <p-menu #menu [popup]="true" [model]="candidate.items" appendTo="body"></p-menu>
           </td>
           <td *ngIf="isJobContext" (click)="$event.stopPropagation()">
             <p-tableCheckbox [value]="candidate"></p-tableCheckbox>
@@ -118,21 +90,14 @@
             <div class="truncate-text">{{ candidate.totalYearsOfExperience }}</div>
           </td>
           <td>
-            <span
-              class="status-badge"
-              [ngClass]="getWorkStatusClass(candidate.workStatus)">
+            <span class="status-badge" [ngClass]="getWorkStatusClass(candidate.workStatus)">
               {{ candidate.workStatus ? getWorkStatusLabel(candidate.workStatus) : 'N/A' }}
             </span>
           </td>
           <td (click)="$event.stopPropagation()">
-            <button
-              pButton
-              type="button"
-              [icon]="candidate.resumeBase64 ? 'pi pi-eye' : 'pi pi-eye-slash'"
-              class="p-button-text p-button-sm resume-btn"
-              [disabled]="!candidate.resumeBase64"
-              pTooltip="{{ !candidate.resumeBase64 ? 'No resume found' : '' }}"
-              tooltipPosition="top"
+            <button pButton type="button" [icon]="candidate.resumeBase64 ? 'pi pi-eye' : 'pi pi-eye-slash'"
+              class="p-button-text p-button-sm resume-btn" [disabled]="!candidate.resumeBase64"
+              pTooltip="{{ !candidate.resumeBase64 ? 'No resume found' : '' }}" tooltipPosition="top"
               (click)="viewResume(candidate)">
             </button>
           </td>
@@ -146,39 +111,20 @@
       </ng-template>
     </p-table>
 
-    <button
-      *ngIf="isJobContext"
-      pButton
-      label="Map Selected Candidates"
-      icon="pi pi-link"
-      class="p-button-success mt-2"
-      [disabled]="!selectedCandidates || !selectedCandidates.length"
-      (click)="mapSelectedCandidates()">
+    <button *ngIf="isJobContext" pButton label="Map Selected Candidates" icon="pi pi-link" class="p-button-success mt-2"
+      [disabled]="!selectedCandidates || !selectedCandidates.length" (click)="mapSelectedCandidates()">
     </button>
   </div>
 </div>
 
 <!-- Resume Preview Modal -->
-<p-dialog
-  header="Resume Preview"
-  [(visible)]="displayResumeModal"
-  [modal]="true"
-  [closable]="true"
-  [resizable]="true"
-  [draggable]="false"
-  [style]="{ width: '95vw', maxWidth: '95vw', height: '95vh', maxHeight: '95vh', padding: '0' }"
+<p-dialog header="Resume Preview" [(visible)]="displayResumeModal" [modal]="true" [closable]="true" [resizable]="true"
+  [draggable]="false" [style]="{ width: '95vw', maxWidth: '95vw', height: '95vh', maxHeight: '95vh', padding: '0' }"
   [contentStyle]="{ height: 'calc(95vh - 50px)', overflow: 'auto', padding: '0' }">
   <ng-container *ngIf="resumeSrc">
-    <iframe
-      *ngIf="resumeMimeType === 'application/pdf'"
-      [src]="resumeSrc | safe"
-      width="100%"
-      height="100%"
+    <iframe *ngIf="resumeMimeType === 'application/pdf'" [src]="resumeSrc | safe" width="100%" height="100%"
       style="border:none;"></iframe>
-    <img
-      *ngIf="resumeMimeType.startsWith('image/')"
-      [src]="resumeSrc"
-      width="100%"
-      style="height:100%; object-fit:contain; display:block; margin:auto;"/>
+    <img *ngIf="resumeMimeType.startsWith('image/')" [src]="resumeSrc" width="100%"
+      style="height:100%; object-fit:contain; display:block; margin:auto;" />
   </ng-container>
 </p-dialog>

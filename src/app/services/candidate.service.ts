@@ -4,6 +4,8 @@ import { PathConfig } from '../config/path-config';
 
 export class CandidateProcess {
   id?: string;
+  candidateId?: string;
+  jobId?: string;
   resumeSource?: string;
   interviewMode?: string;
   interviewDate?: Date;
@@ -46,23 +48,33 @@ export class CandidateService {
     return this.http.get<any>(`${this.baseUrl}/detail/${id}`);
   }
 
-  getByCandidateProcessById(candidateId: string) {
-    return this.http.get<any>(`${this.baseUrl}/process/${candidateId}`);
+  getPreScreening(candidateId: string) {
+    return this.http.get<any>(`${this.baseUrl}/pre-screening/${candidateId}`);
   }
 
-  updateCandidateProcess(id: string, process: CandidateProcess) {
-    return this.http.put<any>(`${this.baseUrl}/process/${id}`, process);
+  savePreScreening(process: CandidateProcess) {
+    return this.http.post<any>(`${this.baseUrl}/pre-screening`, process);
   }
 
-  createCandidateProcess(process: CandidateProcess) {
-    return this.http.post<any>(`${this.baseUrl}/process`, process);
+  getJobProcess(candidateId: string, jobId: string) {
+    return this.http.get<any>(`${this.baseUrl}/job-process/${candidateId}?jobId=${jobId}`);
   }
+
+  saveJobProcess(process: CandidateProcess) {
+    return this.http.post<any>(`${this.baseUrl}/job-process`, process);
+  }
+
+  getJobProcessesByJob(jobId: string) {
+    return this.http.get<any>(`${this.baseUrl}/job-process/job/${jobId}`);
+  }
+
+
 
   fetchDropdown() {
-    return this.http.get<any[]>(PathConfig.API_ENDPOINT +`dropdown/fetchJobList`);
+    return this.http.get<any[]>(PathConfig.API_ENDPOINT + `dropdown/fetchJobList`);
   }
 
   fetchCandidatesByIds(candidateIds: string[]) {
-    return this.http.post<any>(`${this.baseUrl}/by-ids`,  {candidateIds} );
+    return this.http.post<any>(`${this.baseUrl}/by-ids`, { candidateIds });
   }
 }
