@@ -95,6 +95,7 @@ export class CandidateProceedFurtherComponent implements OnInit {
 
   candidateName: string = '';
   flowType: 'PRE_SCREENING' | 'PROCEED_FURTHER' = 'PRE_SCREENING';
+  preScreeningCompleted: boolean = false;
 
   constructor(
     private router: Router,
@@ -140,9 +141,7 @@ export class CandidateProceedFurtherComponent implements OnInit {
               console.log('Job Process Data:', jobRes.data);
 
               this.process = { ...preRes.data, ...jobRes.data };
-
               this.process.jobId = jobId;
-
 
               this.service.fetchCandidateById(this.candidateId!).subscribe(cRes => {
                 if (cRes.data && cRes.data.workStatus) {
@@ -150,14 +149,20 @@ export class CandidateProceedFurtherComponent implements OnInit {
                 }
               });
 
-
               console.log('Merged Process Data:', this.process);
               this.convertDatesToObjects();
 
-              if (this.process.status?.toUpperCase() === 'COMPLETED') {
+              this.preScreeningCompleted = preRes.data?.status?.toUpperCase() === 'COMPLETED';
+
+              if (jobRes.data?.status?.toUpperCase() === 'COMPLETED') {
                 this.currentStep = 0;
+              } else if (preRes.data?.status?.toUpperCase() === 'COMPLETED') {
+                this.currentStep = (jobRes.data?.currentStep && jobRes.data.currentStep >= 5)
+                  ? jobRes.data.currentStep
+                  : 5;
               } else {
-                this.currentStep = (this.process.currentStep && this.process.currentStep >= 5) ? this.process.currentStep : 5;
+                const preScreeningStep = preRes.data?.currentStep || 1;
+                this.currentStep = preScreeningStep <= 4 ? preScreeningStep : 1;
               }
             },
             error: (err) => {
@@ -204,6 +209,19 @@ export class CandidateProceedFurtherComponent implements OnInit {
     this.process.candidateId = this.candidateId;
 
 
+    if (this.flowType === 'PROCEED_FURTHER' && this.currentStep === 4 && nextStep === 5) {
+      this.service.savePreScreening(this.process).subscribe({
+        next: preRes => {
+          this.util.toastr('Pre-Screening data saved!', false);
+          this.preScreeningCompleted = true;
+          this.currentStep = 5;
+          activateCallback(5);
+        },
+        error: () => this.util.toastr('Failed to save pre-screening', true)
+      });
+      return;
+    }
+
     const request$ = this.flowType === 'PROCEED_FURTHER'
       ? this.service.saveJobProcess(this.process)
       : this.service.savePreScreening(this.process);
@@ -218,7 +236,10 @@ export class CandidateProceedFurtherComponent implements OnInit {
         const isCompleted = this.process.status?.toUpperCase() === 'COMPLETED';
         if (isCompleted) {
           this.currentStep = 0;
-          this.util.toastr('Candidate Pre-Screening Completed!', false);
+          const message = this.flowType === 'PROCEED_FURTHER'
+            ? 'Candidate Process Completed!'
+            : 'Candidate Pre-Screening Completed!';
+          this.util.toastr(message, false);
         } else {
           this.util.toastr(`Step ${nextStep - 1} saved successfully!`, false);
         }
@@ -253,6 +274,10 @@ export class CandidateProceedFurtherComponent implements OnInit {
   getWorkStatusLabel(value?: string): string {
     const status = this.workStatuses.find(s => s.value === value);
     return status ? status.label : 'N/A';
+  }
+
+  isPreScreeningCompleted(): boolean {
+    return this.process?.status?.toUpperCase() === 'COMPLETED' && this.flowType === 'PRE_SCREENING';
   }
 
   private isStepValid(step: number): boolean {
