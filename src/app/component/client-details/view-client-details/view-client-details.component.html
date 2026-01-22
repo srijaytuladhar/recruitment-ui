@@ -126,14 +126,14 @@
           </div>
 
           <div class="form-row">
-            <label>Is Closed Ended:</label>
+            <label class="font-semibold m-0">Is Closed Ended:</label>
             <div class="value">
               <p-checkbox [(ngModel)]="newContract.isClosedEnded" [binary]="true"></p-checkbox>
             </div>
           </div>
 
           <div class="form-row" *ngIf="newContract.isClosedEnded">
-            <label class="required">Contract Expiry Date:</label>
+            <label class="required font-semibold m-0">Contract Expiry Date:</label>
             <div class="value">
               <p-datepicker [(ngModel)]="newContract.contractExpiryDate" appendTo="body" [showIcon]="true"
                 [showOnFocus]="false"></p-datepicker>
@@ -223,7 +223,7 @@
           </div>
 
           <div class="form-row">
-            <label>Is Closed Ended:</label>
+            <label class="font-semibold m-0">Is Closed Ended:</label>
             <div class="value">
               <p-checkbox [(ngModel)]="contract.isClosedEnded" [binary]="true"
                 (onChange)="onContractClosedEndedChange($event, i)"></p-checkbox>
@@ -231,7 +231,7 @@
           </div>
 
           <div class="form-row" *ngIf="contract.isClosedEnded">
-            <label class="required">Contract Expiry Date:</label>
+            <label class="required font-semibold m-0">Contract Expiry Date:</label>
             <div class="value clickable" (click)="enableContractEdit(i, 'contractExpiryDate')"
               *ngIf="editingContractIndex !== i || editingField !== 'contractExpiryDate'">
               {{ contract.contractExpiryDate ? (contract.contractExpiryDate | date:'mediumDate') : 'Click to set date'
