@@ -144,12 +144,10 @@ export class CandidateProceedFurtherComponent implements OnInit {
 
               this.process = { ...preRes.data, ...jobRes.data };
 
-              // Store IDs separately to avoid conflict
               this.process.preScreeningId = preRes.data?.id;
               this.process.jobProcessId = jobRes.data?.id;
 
-              // If in PROCEED_FURTHER flow, allow job process status to override pre-screening status
-              // If job process status is missing (new), default to IN_PROGRESS
+
               if (this.flowType === 'PROCEED_FURTHER') {
                 this.process.status = jobRes.data?.status || 'IN_PROGRESS';
               }
@@ -167,17 +165,14 @@ export class CandidateProceedFurtherComponent implements OnInit {
 
               this.preScreeningCompleted = preRes.data?.status?.toUpperCase() === 'COMPLETED';
 
-              // Determine starting step
               const jobStep = jobRes.data?.currentStep;
               const preStatus = preRes.data?.status?.toUpperCase();
 
               if (jobRes.data?.status?.toUpperCase() === 'COMPLETED') {
                 this.currentStep = 0;
               } else if (preStatus === 'COMPLETED') {
-                // Resume from job process ONLY if pre-screening is explicitly done
                 this.currentStep = (jobStep && jobStep >= 5) ? jobStep : 5;
               } else {
-                // Resume from pre-screening
                 const preScreeningStep = preRes.data?.currentStep || 1;
                 this.currentStep = preScreeningStep <= 4 ? preScreeningStep : 1;
               }
@@ -194,8 +189,7 @@ export class CandidateProceedFurtherComponent implements OnInit {
           next: res => {
             console.log('API Response:', res);
             this.process = res.data || {};
-            // For single flow, the ID is just the ID
-            // process.id is already set
+
             this.convertDatesToObjects();
 
             if (this.process.status?.toUpperCase() === 'COMPLETED') {
@@ -229,9 +223,7 @@ export class CandidateProceedFurtherComponent implements OnInit {
 
 
     if (this.flowType === 'PROCEED_FURTHER' && this.currentStep === 4 && nextStep === 5) {
-      // Save Pre-Screening as COMPLETED when moving to Stage 5
 
-      // Create a clean payload to avoid type errors and extra fields
       const preScreeningPayload: CandidateProcess = {
         candidateId: this.process.candidateId,
         resumeSource: this.process.resumeSource,
@@ -242,11 +234,10 @@ export class CandidateProceedFurtherComponent implements OnInit {
         interviewFor: this.process.interviewFor,
         interviewRemarks: this.process.interviewRemarks,
         profileAssessment: this.process.profileAssessment,
-        currentStep: 4, // Ensure we stay at 4 for the pre-screening record
+        currentStep: 4,
         status: 'COMPLETED'
       };
 
-      // Use preScreeningId if available
       if (this.process.preScreeningId) {
         preScreeningPayload.id = this.process.preScreeningId;
       }
@@ -263,12 +254,10 @@ export class CandidateProceedFurtherComponent implements OnInit {
       return;
     }
 
-    // For stages 1-3 (and 4 if not completing), we should strictly save to pre-screening
-    // For stages 5+, we save to job process
+
     let request$;
     if (this.currentStep < 5) {
-      // Saving Pre-Screening
-      // Create a clean payload with ONLY pre-screening fields to avoid backend issues with extra fields like jobId
+
       const payload: CandidateProcess = {
         candidateId: this.process.candidateId,
         resumeSource: this.process.resumeSource,
@@ -279,22 +268,19 @@ export class CandidateProceedFurtherComponent implements OnInit {
         interviewFor: this.process.interviewFor,
         interviewRemarks: this.process.interviewRemarks,
         profileAssessment: this.process.profileAssessment,
-        currentStep: nextStep, // update to next step
+        currentStep: nextStep,
         status: customStatus || 'IN_PROGRESS'
       };
 
-      // Use the correct ID if available
       if (this.process.preScreeningId) {
         payload.id = this.process.preScreeningId;
       } else if (this.process.id && this.flowType === 'PRE_SCREENING') {
-        // If we are in PRE_SCREENING flow, the main ID is the pre-screening ID
         payload.id = this.process.id;
       }
 
       request$ = this.service.savePreScreening(payload);
     } else {
-      // Saving Job Process
-      // Ensure we use the Job Process ID if we have it
+
       const payload = { ...this.process };
       if (this.process.jobProcessId && this.flowType === 'PROCEED_FURTHER') {
         payload.id = this.process.jobProcessId;
@@ -304,9 +290,7 @@ export class CandidateProceedFurtherComponent implements OnInit {
 
     request$.subscribe({
       next: res => {
-        // If we saved pre-screening, we might only get pre-screening data back.
-        // We need to be careful not to lose job process data if we are in PROCEED_FURTHER flow.
-        // Merging response data into existing process is safer.
+
         this.process = { ...this.process, ...res.data };
         this.convertDatesToObjects();
         this.currentStep = nextStep;
@@ -314,8 +298,7 @@ export class CandidateProceedFurtherComponent implements OnInit {
 
         const isCompleted = this.process.status?.toUpperCase() === 'COMPLETED';
         if (isCompleted && ((this.currentStep === 0) || (this.flowType === 'PRE_SCREENING'))) {
-          // Only show completion message if we are actually finishing the flow (Step 0)
-          // or if we are in PRE_SCREENING flow and just finished it.
+
           if (this.currentStep === 0) {
             const message = this.flowType === 'PROCEED_FURTHER'
               ? 'Candidate Process Completed!'
