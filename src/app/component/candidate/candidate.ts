@@ -1,8 +1,8 @@
 import { CommonModule } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
 import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
-import {FormsModule, ReactiveFormsModule} from '@angular/forms';
-import {ActivatedRoute, Router} from '@angular/router';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { ActivatedRoute, Router } from '@angular/router';
 import { Location } from '@angular/common';
 
 
@@ -19,10 +19,10 @@ import { SafePipe } from '../../config/safe.pipe';
 import { CandidateService } from '../../services/candidate.service';
 import { UtilService } from '../../services/util.service';
 import { MessageService } from 'primeng/api';
-import {Tooltip} from 'primeng/tooltip';
+import { Tooltip } from 'primeng/tooltip';
 import { Menu } from "primeng/menu";
-import {Select} from 'primeng/select';
-import {JobMapperService} from '../../services/jobMapper.service';
+import { Select } from 'primeng/select';
+import { JobMapperService } from '../../services/jobMapper.service';
 
 @Component({
   selector: 'app-candidate',
@@ -67,7 +67,8 @@ export class Candidate implements OnInit {
   itemsTemplate = [
     { label: 'Edit', icon: 'pi pi-refresh', command: (candidate: any) => console.log('Edit', candidate) },
     { label: 'View', icon: 'pi pi-eye', command: (candidate: any) => this.router.navigate(['candidates/view', candidate.id]) },
-    // { label: 'Proceed Further', icon: 'pi pi-forward', command: (candidate: any) => this.router.navigate(['candidates/proceed', candidate.id]) },
+    { label: 'Pre-Screening', icon: 'pi pi-briefcase', command: (candidate: any) => this.navigateToPreScreening(candidate.id) },
+
     { label: 'Quit', icon: 'pi pi-power-off', command: () => window.open('https://angular.io/', '_blank') },
   ];
 
@@ -82,7 +83,7 @@ export class Candidate implements OnInit {
     private route: ActivatedRoute,
     private jobMapperService: JobMapperService,
     private location: Location
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.route.queryParams.subscribe(params => {
@@ -129,6 +130,10 @@ export class Candidate implements OnInit {
     }
 
     this.displayResumeModal = true;
+  }
+
+  navigateToPreScreening(id: string) {
+    this.router.navigate(['workflow/pre-screening', id]);
   }
 
   getWorkStatusClass(status: string): string {

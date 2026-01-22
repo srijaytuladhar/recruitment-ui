@@ -92,9 +92,7 @@ export class ViewClientDetailsComponent implements OnInit {
           if (this.client.contractList && Array.isArray(this.client.contractList) && this.client.contractList.length > 0) {
             this.contracts = this.client.contractList;
           } else {
-            // Check if legacy fields have data
             if (this.client.contractPrice || this.client.contractExpiryDate) {
-              // Map legacy fields to first contract
               this.contracts = [{
                 contractPrice: this.client.contractPrice,
                 contractExpiryDate: this.client.contractExpiryDate,
@@ -104,7 +102,6 @@ export class ViewClientDetailsComponent implements OnInit {
                 name: 'Contract Document'
               }];
             } else {
-              // No contracts at all, open add form
               this.contracts = [];
               this.addContract();
             }
@@ -202,14 +199,14 @@ export class ViewClientDetailsComponent implements OnInit {
       next: (res: any) => {
         if (res.success) {
           this.util.toastr('Updated successfully');
-          this.checkContractExpiry(); // Re-check if date changed
+          this.checkContractExpiry();
         } else {
-          this.client[field] = previousValue; // Revert
+          this.client[field] = previousValue;
           this.util.toastr(res.message || 'Update failed', true);
         }
       },
       error: (err) => {
-        this.client[field] = previousValue; // Revert
+        this.client[field] = previousValue;
         this.util.toastr('Update failed', true);
       }
     });
@@ -231,7 +228,6 @@ export class ViewClientDetailsComponent implements OnInit {
     name: ''
   };
 
-  // Contract Methods
   addContract() {
     this.isAddingContract = true;
     this.newContract = {
@@ -250,7 +246,6 @@ export class ViewClientDetailsComponent implements OnInit {
   }
 
   saveNewContract() {
-    // Basic validation
     if (!this.newContract.contractPrice || !this.newContract.contractExpiryDate) {
       this.util.toastr('Please fill in price and expiry date', true);
       return;
@@ -268,7 +263,6 @@ export class ViewClientDetailsComponent implements OnInit {
       this.newContract.contractExpiredMessage = null;
     }
 
-    // Add to list and save
     this.contracts.unshift({ ...this.newContract });
     this.isAddingContract = false;
     this.newContract = null;
@@ -330,9 +324,8 @@ export class ViewClientDetailsComponent implements OnInit {
 
   updateClientContracts() {
     const payload = { ...this.client };
-    payload.contractList = this.contracts; // Changed key to match backend DTO
+    payload.contractList = this.contracts;
 
-    // Update legacy fields for backward compatibility
     if (this.contracts.length > 0) {
       const first = this.contracts[0];
       payload.contractPrice = first.contractPrice;

@@ -3,6 +3,50 @@
   animation: fadeSlide 0.3s ease-in;
 }
 
+.candidate-name-badge {
+  background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+  border-right: 4px solid #2196f3;
+  padding: 0.75rem 1.25rem;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+  width: fit-content;
+}
+
+.candidate-name-badge i {
+  color: #1976d2;
+  font-size: 1.2rem;
+}
+
+.candidate-name-badge span {
+  font-weight: 600;
+  color: #1565c0;
+  font-size: 1.1rem;
+}
+
+/* Make disabled inputs more readable */
+::ng-deep fieldset[disabled] .p-inputtext:disabled,
+::ng-deep fieldset[disabled] .p-steps-current,
+::ng-deep fieldset[disabled] textarea:disabled {
+  opacity: 1 !important;
+  background-color: #f8f9fa !important;
+  color: #2c3e50 !important;
+  border-color: #dee2e6 !important;
+  cursor: default !important;
+}
+
+::ng-deep fieldset[disabled] .p-dropdown-disabled {
+  opacity: 1 !important;
+  background-color: #f8f9fa !important;
+}
+
+::ng-deep fieldset[disabled] label {
+  color: #555 !important;
+}
+
 .animated-stepper ::ng-deep .p-stepper-header.p-highlight {
   background: #d0ebff;
   border-radius: 8px;

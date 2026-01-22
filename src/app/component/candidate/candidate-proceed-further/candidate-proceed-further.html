@@ -1,57 +1,72 @@
 <p-toast></p-toast>
 
 <div class="container" [@fadeInOut]>
+  <div class="mb-4">
+    <div *ngIf="process?.status?.toUpperCase() === 'COMPLETED'"
+      class="flex items-center bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative"
+      role="alert">
+      <i class="pi pi-check-circle mr-2 text-xl"></i>
+      <div>
+        <strong class="font-bold">Completed!</strong>
+        <span class="block sm:inline"> {{ flowType === 'PRE_SCREENING' ? 'Candidate Pre-Screening is completed.' :
+          'Candidate Process is completed. Candidate Selected!' }}</span>
+      </div>
+    </div>
+    <div *ngIf="process?.status?.toUpperCase() !== 'COMPLETED'"
+      class="flex items-center bg-blue-100 border border-blue-400 text-blue-700 px-4 py-3 rounded relative"
+      role="alert">
+      <i class="pi pi-info-circle mr-2 text-xl"></i>
+      <div>
+        <strong class="font-bold">In Progress</strong>
+        <span class="block sm:inline"> Pre-Screening is currently in progress.</span>
+      </div>
+    </div>
+  </div>
+
   <div class="header mb-2">
     <div class="flex align-items-center gap-3 mb-2">
       <h2 class="m-0">
-        Proceed Further
+        {{ flowType === 'PRE_SCREENING' ? 'Pre-screening' : 'Proceed Further' }}
       </h2>
-      <p-badge
-        *ngIf="process?.status === 'COMPLETED'"
-        severity="success"
-        badgeSize="large"
+      <div *ngIf="candidateName" class="candidate-name-badge">
+        <i class="pi pi-user"></i>
+        <span>{{ candidateName }}</span>
+      </div>
+      <p-badge *ngIf="process?.status === 'COMPLETED'" severity="success" badgeSize="large"
         pTooltip="Process Completed">
       </p-badge>
     </div>
 
-    <p-button
-      label="Back"
-      icon="pi pi-arrow-left"
-      severity="secondary"
-      (click)="goBack()"
-    ></p-button>
+    <p-button label="Back" icon="pi pi-arrow-left" severity="secondary" (click)="goBack()"></p-button>
   </div>
 
-  <p-stepper [(value)]="currentStep" [linear]="true" class="animated-stepper">
+  <p-stepper [(value)]="currentStep" [linear]="process?.status?.toUpperCase() !== 'COMPLETED'" class="animated-stepper">
     <p-step-item [value]="1">
       <p-step>Resume Source</p-step>
       <p-step-panel>
         <ng-template #content let-activateCallback="activateCallback">
           <div [@fadeInOut]>
             <div class="p-5 border border-gray-200 rounded-lg shadow-sm bg-white">
-              <div class="form-row mb-2">
-                <label class="block font-semibold mb-3">
-                  Resume / Portfolio Source <span class="text-red-500">*</span>
-                </label>
-                <input
-                  pInputText
-                  type="text"
-                  [(ngModel)]="process.resumeSource"
-                  placeholder="e.g., LinkedIn, GitHub, personal website"
-                  class="w-full md:w-96 p-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-400"
-                />
-                <small class="text-gray-500 mt-1 block">
-                  Please enter the URL or source where the candidate's resume or portfolio can be accessed.
-                </small>
-              </div>
+              <fieldset
+                [disabled]="flowType === 'PROCEED_FURTHER' || (flowType === 'PRE_SCREENING' && process.status?.toUpperCase() === 'COMPLETED')"
+                style="border:none; padding:0; margin:0;">
+                <div class="form-row mb-2">
+                  <label class="block font-semibold mb-3">
+                    Resume / Portfolio Source <span class="text-red-500">*</span>
+                  </label>
+                  <input pInputText type="text" [(ngModel)]="process.resumeSource"
+                    placeholder="e.g., LinkedIn, GitHub, personal website"
+                    class="w-full md:w-96 p-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-400" />
+                  <small class="text-gray-500 mt-1 block">
+                    Please enter the URL or source where the candidate's resume or portfolio can be accessed.
+                  </small>
+                </div>
 
-              <div class="form-row mt-3 flex justify-end">
-                <p-button
-                  label="Next"
-                  icon="pi pi-arrow-right"
-                  class="p-button-success"
-                  (click)="saveAndNext(activateCallback, 2)"
-                ></p-button>
+              </fieldset>
+              <div class="form-row mt-3 flex justify-end"
+                *ngIf="flowType === 'PRE_SCREENING' && process.status?.toUpperCase() !== 'COMPLETED'">
+                <p-button label="Next" icon="pi pi-arrow-right" class="p-button-success"
+                  (click)="saveAndNext(activateCallback, 2)"></p-button>
               </div>
             </div>
           </div>
@@ -65,35 +80,28 @@
         <ng-template #content let-activateCallback="activateCallback">
           <div [@fadeInOut]>
             <div class="p-5 border border-gray-200 rounded-lg shadow-sm bg-white">
-              <div class="form-row mb-2">
-                <label class="block font-semibold mb-3">
-                  Candidate Details <span class="text-red-500">*</span>
-                </label>
-                <textarea
-                  pInputTextarea
-                  [(ngModel)]="process.detailEntryNotes"
-                  placeholder="Enter candidate details"
-                  rows="4"
-                  class="w-full md:w-96 p-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-400"
-                ></textarea>
-                <small class="text-gray-500 mt-1 block">
-                  Please provide relevant notes or details about the candidate.
-                </small>
-              </div>
+              <fieldset
+                [disabled]="flowType === 'PROCEED_FURTHER' || (flowType === 'PRE_SCREENING' && process.status?.toUpperCase() === 'COMPLETED')"
+                style="border:none; padding:0; margin:0;">
+                <div class="form-row mb-2">
+                  <label class="block font-semibold mb-3">
+                    Candidate Details <span class="text-red-500">*</span>
+                  </label>
+                  <textarea pInputTextarea [(ngModel)]="process.detailEntryNotes" placeholder="Enter candidate details"
+                    rows="4"
+                    class="w-full md:w-96 p-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-400"></textarea>
+                  <small class="text-gray-500 mt-1 block">
+                    Please provide relevant notes or details about the candidate.
+                  </small>
+                </div>
 
-              <div class="form-row mt-3 flex justify-between md:justify-end gap-2">
-                <p-button
-                  label="Back"
-                  severity="secondary"
-                  icon="pi pi-arrow-left"
-                  (click)="activateCallback(1)"
-                ></p-button>
-                <p-button
-                  label="Next"
-                  icon="pi pi-arrow-right"
-                  class="p-button-success"
-                  (click)="saveAndNext(activateCallback, 3)"
-                ></p-button>
+              </fieldset>
+              <div class="form-row mt-3 flex justify-between md:justify-end gap-2"
+                *ngIf="flowType === 'PRE_SCREENING' && process.status?.toUpperCase() !== 'COMPLETED'">
+                <p-button label="Back" severity="secondary" icon="pi pi-arrow-left"
+                  (click)="activateCallback(1)"></p-button>
+                <p-button label="Next" icon="pi pi-arrow-right" class="p-button-success"
+                  (click)="saveAndNext(activateCallback, 3)"></p-button>
               </div>
             </div>
           </div>
@@ -107,49 +115,40 @@
         <ng-template #content let-activateCallback="activateCallback">
           <div [@fadeInOut]>
             <div class="p-5 border border-gray-200 rounded-lg shadow-sm bg-white">
-              <div class="form-row mb-4">
-                <label class="block font-semibold mb-2">
-                  Interview Mode <span class="text-red-500">*</span>
-                </label>
-                <p-select
-                  [options]="interviewModes"
-                  [(ngModel)]="process.interviewMode"
-                  optionLabel="label"
-                  placeholder="Select Mode"
-                  class="w-full md:w-96"
-                ></p-select>
-                <small class="text-gray-500 mt-1 block">
-                  Choose whether the interview is Virtual or In Person.
-                </small>
-              </div>
+              <fieldset
+                [disabled]="flowType === 'PROCEED_FURTHER' || (flowType === 'PRE_SCREENING' && process.status?.toUpperCase() === 'COMPLETED')"
+                style="border:none; padding:0; margin:0;">
+                <div class="form-row mb-4">
+                  <label class="block font-semibold mb-2">
+                    Interview Mode <span class="text-red-500">*</span>
+                  </label>
+                  <p-select [options]="interviewModes" [(ngModel)]="process.interviewMode" optionLabel="label"
+                    optionValue="value"
+                    [disabled]="flowType === 'PROCEED_FURTHER' || (flowType === 'PRE_SCREENING' && process.status?.toUpperCase() === 'COMPLETED')"
+                    placeholder="Select Mode" class="w-full md:w-96"></p-select>
+                  <small class="text-gray-500 mt-1 block">
+                    Choose whether the interview is Virtual or In Person.
+                  </small>
+                </div>
 
-              <div class="form-row mb-4">
-                <label class="block font-semibold mb-2">
-                  Interview Date <span class="text-red-500">*</span>
-                </label>
-                <p-datepicker
-                  [(ngModel)]="process.interviewDate"
-                  [showIcon]="true"
-                  [showOnFocus]="false"
-                ></p-datepicker>
-                <small class="text-gray-500 mt-1 block">
-                  Select the scheduled date for the interview.
-                </small>
-              </div>
+                <div class="form-row mb-4">
+                  <label class="block font-semibold mb-2">
+                    Interview Date <span class="text-red-500">*</span>
+                  </label>
+                  <p-datepicker [(ngModel)]="process.interviewDate" [showIcon]="true"
+                    [showOnFocus]="false"></p-datepicker>
+                  <small class="text-gray-500 mt-1 block">
+                    Select the scheduled date for the interview.
+                  </small>
+                </div>
 
-              <div class="form-row mt-4 flex justify-between md:justify-end gap-2">
-                <p-button
-                  label="Back"
-                  severity="secondary"
-                  icon="pi pi-arrow-left"
-                  (click)="activateCallback(2)"
-                ></p-button>
-                <p-button
-                  label="Next"
-                  icon="pi pi-arrow-right"
-                  class="p-button-success"
-                  (click)="saveAndNext(activateCallback, 4)"
-                ></p-button>
+              </fieldset>
+              <div class="form-row mt-4 flex justify-between md:justify-end gap-2"
+                *ngIf="flowType === 'PRE_SCREENING' && process.status !== 'COMPLETED'">
+                <p-button label="Back" severity="secondary" icon="pi pi-arrow-left"
+                  (click)="activateCallback(2)"></p-button>
+                <p-button label="Next" icon="pi pi-arrow-right" class="p-button-success"
+                  (click)="saveAndNext(activateCallback, 4)"></p-button>
               </div>
             </div>
           </div>
@@ -163,73 +162,52 @@
         <ng-template #content let-activateCallback="activateCallback">
           <div [@fadeInOut]>
             <div class="p-5 border border-gray-200 rounded-lg shadow-sm bg-white">
-              <div class="form-row mb-4">
-                <label class="block font-semibold mb-2">
-                  Interview Name <span class="text-red-500">*</span>
-                </label>
-                <input
-                  pInputText
-                  type="text"
-                  [(ngModel)]="process.interviewName"
-                  placeholder="Enter interview name"
-                  class="w-full md:w-96 p-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-400"
-                />
-                <small class="text-gray-500 mt-1 block">
-                  Name of the interview session.
-                </small>
-              </div>
+              <fieldset
+                [disabled]="flowType === 'PROCEED_FURTHER' || (flowType === 'PRE_SCREENING' && process.status?.toUpperCase() === 'COMPLETED')"
+                style="border:none; padding:0; margin:0;">
+                <div class="form-row mb-4">
+                  <label class="block font-semibold mb-2">
+                    Interview Name <span class="text-red-500">*</span>
+                  </label>
+                  <input pInputText type="text" [(ngModel)]="process.interviewName" placeholder="Enter interview name"
+                    class="w-full md:w-96 p-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-400" />
+                  <small class="text-gray-500 mt-1 block">
+                    Name of the interview session.
+                  </small>
+                </div>
 
-              <div class="form-row mb-4">
-                <label class="block font-semibold mb-2">
-                  Interview For <span class="text-red-500">*</span>
-                </label>
-                <input
-                  pInputText
-                  type="text"
-                  [(ngModel)]="process.interviewFor"
-                  placeholder="Position or role"
-                  class="w-full md:w-96 p-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-400"
-                />
-                <small class="text-gray-500 mt-1 block">
-                  Specify the position or role the interview is conducted for.
-                </small>
-              </div>
+                <div class="form-row mb-4">
+                  <label class="block font-semibold mb-2">
+                    Interview For <span class="text-red-500">*</span>
+                  </label>
+                  <input pInputText type="text" [(ngModel)]="process.interviewFor" placeholder="Position or role"
+                    class="w-full md:w-96 p-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-400" />
+                  <small class="text-gray-500 mt-1 block">
+                    Specify the position or role the interview is conducted for.
+                  </small>
+                </div>
 
-              <div class="form-row mb-4">
-                <label class="block font-semibold mb-2">Remarks</label>
-                <textarea
-                  pInputTextarea
-                  [(ngModel)]="process.interviewRemarks"
-                  rows="3"
-                  placeholder="Any remarks about the interview"
-                  class="w-full md:w-96 p-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-400"
-                ></textarea>
-              </div>
+                <div class="form-row mb-4">
+                  <label class="block font-semibold mb-2">Remarks</label>
+                  <textarea pInputTextarea [(ngModel)]="process.interviewRemarks" rows="3"
+                    placeholder="Any remarks about the interview"
+                    class="w-full md:w-96 p-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-400"></textarea>
+                </div>
 
-              <div class="form-row mb-4">
-                <label class="block font-semibold mb-2">Profile Assessment</label>
-                <textarea
-                  pInputTextarea
-                  [(ngModel)]="process.profileAssessment"
-                  rows="3"
-                  placeholder="Assessment notes about candidate's profile"
-                  class="w-full md:w-96 p-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-400"
-                ></textarea>
-              </div>
+                <div class="form-row mb-4">
+                  <label class="block font-semibold mb-2">Profile Assessment</label>
+                  <textarea pInputTextarea [(ngModel)]="process.profileAssessment" rows="3"
+                    placeholder="Assessment notes about candidate's profile"
+                    class="w-full md:w-96 p-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-400"></textarea>
+                </div>
 
-              <div class="form-row mt-4 flex justify-between md:justify-end gap-2">
-                <p-button
-                  label="Back"
-                  severity="secondary"
-                  icon="pi pi-arrow-left"
-                  (click)="activateCallback(3)"
-                ></p-button>
-                <p-button
-                  label="Next"
-                  icon="pi pi-arrow-right"
-                  class="p-button-success"
-                  (click)="saveAndNext(activateCallback, 5)"
-                ></p-button>
+              </fieldset>
+              <div class="form-row mt-4 flex justify-between md:justify-end gap-2"
+                *ngIf="flowType === 'PRE_SCREENING' && process.status?.toUpperCase() !== 'COMPLETED'">
+                <p-button label="Back" severity="secondary" icon="pi pi-arrow-left"
+                  (click)="activateCallback(3)"></p-button>
+                <p-button label="Complete Pre-Screening" icon="pi pi-check" class="p-button-success"
+                  (click)="saveAndNext(activateCallback, 4, 'COMPLETED')"></p-button>
               </div>
             </div>
           </div>
@@ -237,66 +215,67 @@
       </p-step-panel>
     </p-step-item>
 
-    <p-step-item [value]="5">
+    <p-step-item [value]="5" *ngIf="flowType === 'PROCEED_FURTHER'">
       <p-step>Forward to Client</p-step>
       <p-step-panel>
         <ng-template #content let-activateCallback="activateCallback">
           <div [@fadeInOut]>
             <div class="p-5 border border-gray-200 rounded-lg shadow-sm bg-white">
-              <div class="form-row mb-4">
-                <label class="block font-semibold mb-2">
-                  Profile Forwarded Date <span class="text-red-500">*</span>
-                </label>
-                <p-datepicker
-                  [(ngModel)]="process.profileForwardedDate"
-                  [showIcon]="true"
-                  [showOnFocus]="false"
-                ></p-datepicker>
-                <small class="text-gray-500 mt-1 block">
-                  Select the date when the candidate's profile was forwarded to the client.
-                </small>
-              </div>
+              <fieldset [disabled]="process.status?.toUpperCase() === 'COMPLETED'"
+                style="border:none; padding:0; margin:0;">
 
-              <div class="form-row mb-4">
-                <label class="block font-semibold mb-2">Follow Up 1</label>
-                <p-datepicker
-                  [(ngModel)]="process.followUp1Date"
-                  [showIcon]="true"
-                  [showOnFocus]="false"
-                ></p-datepicker>
-              </div>
 
-              <div class="form-row mb-4">
-                <label class="block font-semibold mb-2">Follow Up 2</label>
-                <p-datepicker
-                  [(ngModel)]="process.followUp2Date"
-                  [showIcon]="true"
-                  [showOnFocus]="false"
-                ></p-datepicker>
-              </div>
 
-              <div class="form-row mb-4">
-                <label class="block font-semibold mb-2">Follow Up 3</label>
-                <p-datepicker
-                  [(ngModel)]="process.followUp3Date"
-                  [showIcon]="true"
-                  [showOnFocus]="false"
-                ></p-datepicker>
-              </div>
+                <div class="form-row mb-4">
+                  <label class="block font-semibold mb-2">
+                    Working Status
+                  </label>
+                  <div class="p-3 bg-gray-50 border rounded text-gray-700 w-full md:w-96">
+                    {{ getWorkStatusLabel(process.workingStatus) }}
+                  </div>
+                  <small class="text-gray-500 mt-1 block">
+                    Current working status of the candidate (Read-only).
+                  </small>
+                </div>
 
-              <div class="form-row mt-4 flex justify-between md:justify-end gap-2">
-                <p-button
-                  label="Back"
-                  severity="secondary"
-                  icon="pi pi-arrow-left"
-                  (click)="activateCallback(4)"
-                ></p-button>
-                <p-button
-                  label="Next"
-                  icon="pi pi-arrow-right"
-                  class="p-button-success"
-                  (click)="saveAndNext(activateCallback, 6)"
-                ></p-button>
+                <div class="form-row mb-4">
+                  <label class="block font-semibold mb-2">
+                    Profile Forwarded Date <span class="text-red-500">*</span>
+                  </label>
+                  <p-datepicker [(ngModel)]="process.profileForwardedDate" [showIcon]="true"
+                    [showOnFocus]="false"></p-datepicker>
+                  <small class="text-gray-500 mt-1 block">
+                    Select the date when the candidate's profile was forwarded to the client.
+                  </small>
+                </div>
+
+
+
+                <div class="form-row mb-4">
+                  <label class="block font-semibold mb-2">Follow Up 1</label>
+                  <p-datepicker [(ngModel)]="process.followUp1Date" [showIcon]="true"
+                    [showOnFocus]="false"></p-datepicker>
+                </div>
+
+                <div class="form-row mb-4">
+                  <label class="block font-semibold mb-2">Follow Up 2</label>
+                  <p-datepicker [(ngModel)]="process.followUp2Date" [showIcon]="true"
+                    [showOnFocus]="false"></p-datepicker>
+                </div>
+
+                <div class="form-row mb-4">
+                  <label class="block font-semibold mb-2">Follow Up 3</label>
+                  <p-datepicker [(ngModel)]="process.followUp3Date" [showIcon]="true"
+                    [showOnFocus]="false"></p-datepicker>
+                </div>
+
+              </fieldset>
+
+              <div class="form-row mt-4 flex justify-between md:justify-end gap-2"
+                *ngIf="process.status?.toUpperCase() !== 'COMPLETED'">
+                <!-- No back button to step 4 in this flow -->
+                <p-button label="Next" icon="pi pi-arrow-right" class="p-button-success"
+                  (click)="saveAndNext(activateCallback, 6)"></p-button>
               </div>
             </div>
 
@@ -305,61 +284,48 @@
       </p-step-panel>
     </p-step-item>
 
-    <p-step-item [value]="6">
+    <p-step-item [value]="6" *ngIf="flowType === 'PROCEED_FURTHER'">
       <p-step>Client Interview</p-step>
       <p-step-panel>
         <ng-template #content let-activateCallback="activateCallback">
           <div [@fadeInOut]>
             <div class="p-5 border border-gray-200 rounded-lg shadow-sm bg-white">
-              <!-- Client Interview Date -->
-              <div class="form-row mb-4">
-                <label class="block font-semibold mb-2">
-                  Client Interview Date <span class="text-red-500">*</span>
-                </label>
-                <p-datepicker
-                  [(ngModel)]="process.clientInterviewDate"
-                  [showIcon]="true"
-                  [showOnFocus]="false"
-                ></p-datepicker>
-                <small class="text-gray-500 mt-1 block">
-                  Select the date scheduled for the client interview.
-                </small>
-              </div>
-              <div class="form-row mb-4">
-                <label class="block font-semibold mb-2">
-                  Interview Rounds <span class="text-red-500">*</span>
-                </label>
-                <input
-                  pInputText
-                  type="number"
-                  [(ngModel)]="process.clientInterviewRounds"
-                  placeholder="Enter number of rounds"
-                  class="w-full md:w-96 p-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-400"
-                />
-              </div>
-              <div class="form-row mb-4">
-                <label class="block font-semibold mb-2">Assessment</label>
-                <textarea
-                  pInputTextarea
-                  [(ngModel)]="process.clientInterviewAssessment"
-                  rows="3"
-                  placeholder="Assessment notes from client interview"
-                  class="w-full md:w-96 p-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-400"
-                ></textarea>
-              </div>
-              <div class="form-row mt-4 flex justify-between md:justify-end gap-2">
-                <p-button
-                  label="Back"
-                  severity="secondary"
-                  icon="pi pi-arrow-left"
-                  (click)="activateCallback(5)"
-                ></p-button>
-                <p-button
-                  label="Next"
-                  icon="pi pi-arrow-right"
-                  class="p-button-success"
-                  (click)="saveAndNext(activateCallback, 7)"
-                ></p-button>
+              <fieldset [disabled]="process.status?.toUpperCase() === 'COMPLETED'"
+                style="border:none; padding:0; margin:0;">
+                <!-- Client Interview Date -->
+                <div class="form-row mb-4">
+                  <label class="block font-semibold mb-2">
+                    Client Interview Date <span class="text-red-500">*</span>
+                  </label>
+                  <p-datepicker [(ngModel)]="process.clientInterviewDate" [showIcon]="true"
+                    [showOnFocus]="false"></p-datepicker>
+                  <small class="text-gray-500 mt-1 block">
+                    Select the date scheduled for the client interview.
+                  </small>
+                </div>
+                <div class="form-row mb-4">
+                  <label class="block font-semibold mb-2">
+                    Interview Rounds <span class="text-red-500">*</span>
+                  </label>
+                  <input pInputText type="number" [(ngModel)]="process.clientInterviewRounds"
+                    placeholder="Enter number of rounds"
+                    class="w-full md:w-96 p-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-400" />
+                </div>
+                <div class="form-row mb-4">
+                  <label class="block font-semibold mb-2">Assessment</label>
+                  <textarea pInputTextarea [(ngModel)]="process.clientInterviewAssessment" rows="3"
+                    placeholder="Assessment notes from client interview"
+                    class="w-full md:w-96 p-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-400"></textarea>
+                </div>
+
+              </fieldset>
+
+              <div class="form-row mt-4 flex justify-between md:justify-end gap-2"
+                *ngIf="process.status?.toUpperCase() !== 'COMPLETED'">
+                <p-button label="Back" severity="secondary" icon="pi pi-arrow-left"
+                  (click)="activateCallback(5)"></p-button>
+                <p-button label="Next" icon="pi pi-arrow-right" class="p-button-success"
+                  (click)="saveAndNext(activateCallback, 7)"></p-button>
               </div>
             </div>
           </div>
@@ -367,67 +333,55 @@
       </p-step-panel>
     </p-step-item>
 
-    <p-step-item [value]="7">
+    <p-step-item [value]="7" *ngIf="flowType === 'PROCEED_FURTHER'">
       <p-step>Client Selection</p-step>
       <p-step-panel>
         <ng-template #content let-activateCallback="activateCallback">
           <div [@fadeInOut]>
             <div class="p-5 border border-gray-200 rounded-lg shadow-sm bg-white">
-              <!-- Offer Date -->
-              <div class="form-row mb-4">
-                <label class="block font-semibold mb-2">
-                  Offer Date <span class="text-red-500">*</span>
-                </label>
-                <p-datepicker
-                  [(ngModel)]="process.clientSelectionOfferDate"
-                  [showIcon]="true"
-                  [showOnFocus]="false"
-                ></p-datepicker>
-                <small class="text-gray-500 mt-1 block">
-                  Select the date when the offer was made to the candidate.
-                </small>
-              </div>
+              <fieldset [disabled]="process.status?.toUpperCase() === 'COMPLETED'"
+                style="border:none; padding:0; margin:0;">
+                <!-- Offer Date -->
+                <div class="form-row mb-4">
+                  <label class="block font-semibold mb-2">
+                    Offer Date <span class="text-red-500">*</span>
+                  </label>
+                  <p-datepicker [(ngModel)]="process.clientSelectionOfferDate" [showIcon]="true"
+                    [showOnFocus]="false"></p-datepicker>
+                  <small class="text-gray-500 mt-1 block">
+                    Select the date when the offer was made to the candidate.
+                  </small>
+                </div>
 
-              <div class="form-row mb-4">
-                <label class="block font-semibold mb-2">
-                  Offer Amount <span class="text-red-500">*</span>
-                </label>
-                <input
-                  pInputText
-                  type="number"
-                  [(ngModel)]="process.offerAmount"
-                  placeholder="Enter the offered amount"
-                  class="w-full md:w-96 p-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-400"
-                />
-              </div>
+                <div class="form-row mb-4">
+                  <label class="block font-semibold mb-2">
+                    Offer Amount <span class="text-red-500">*</span>
+                  </label>
+                  <input pInputText type="number" [(ngModel)]="process.offerAmount"
+                    placeholder="Enter the offered amount"
+                    class="w-full md:w-96 p-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-400" />
+                </div>
 
-              <div class="form-row mb-4">
-                <label class="block font-semibold mb-2">
-                  Start Date <span class="text-red-500">*</span>
-                </label>
-                <p-datepicker
-                  [(ngModel)]="process.offerStartDate"
-                  [showIcon]="true"
-                  [showOnFocus]="false"
-                ></p-datepicker>
-                <small class="text-gray-500 mt-1 block">
-                  Select the candidate's joining date.
-                </small>
-              </div>
+                <div class="form-row mb-4">
+                  <label class="block font-semibold mb-2">
+                    Start Date <span class="text-red-500">*</span>
+                  </label>
+                  <p-datepicker [(ngModel)]="process.offerStartDate" [showIcon]="true"
+                    [showOnFocus]="false"></p-datepicker>
+                  <small class="text-gray-500 mt-1 block">
+                    Select the candidate's joining date.
+                  </small>
+                </div>
 
-              <div class="form-row mt-4 flex justify-between md:justify-end gap-2">
-                <p-button
-                  label="Back"
-                  severity="secondary"
-                  icon="pi pi-arrow-left"
-                  (click)="activateCallback(6)"
-                ></p-button>
-                <p-button
-                  label="Finish"
-                  icon="pi pi-check"
-                  class="p-button-success"
-                  (click)="finish()"
-                ></p-button>
+
+
+              </fieldset>
+
+              <div class="form-row mt-4 flex justify-between md:justify-end gap-2"
+                *ngIf="process.status?.toUpperCase() !== 'COMPLETED'">
+                <p-button label="Back" severity="secondary" icon="pi pi-arrow-left"
+                  (click)="activateCallback(6)"></p-button>
+                <p-button label="Finish" icon="pi pi-check" class="p-button-success" (click)="finish()"></p-button>
               </div>
             </div>
           </div>

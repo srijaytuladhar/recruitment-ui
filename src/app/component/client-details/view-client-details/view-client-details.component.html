@@ -17,7 +17,6 @@
         'status-badge-inactive': candidate.status !== 'ACTIVE'
       }" style="font-size: 12px;">{{ candidate.status }}</span> -->
     </div>
-    <!-- Buttons moved to Contract Details section -->
   </div>
 
   <ng-container *ngIf="client; else loading">
@@ -31,7 +30,6 @@
       </h3>
 
       <div *ngIf="showInformation">
-        <!-- Client Name (Inline Edit) -->
         <div class="form-row">
           <label>Company Name:</label>
           <div class="value clickable" (click)="enableEdit('companyName')" *ngIf="editingField !== 'companyName'">{{
@@ -113,7 +111,6 @@
       </div>
 
 
-      <!-- Add Contract Form -->
       <div *ngIf="isAddingContract" class="mb-4 p-3 border-1 surface-border border-round relative surface-50">
         <div class="text-xl font-bold mb-3">New Contract Details</div>
 
@@ -185,7 +182,6 @@
         </div>
       </div>
 
-      <!-- Existing Contracts List -->
       <div *ngFor="let contract of contracts; let i = index"
         class="mb-4 p-3 border-1 surface-border border-round relative">
         <div class="flex justify-content-between align-items-center mb-2">
