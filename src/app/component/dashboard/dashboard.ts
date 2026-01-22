@@ -17,12 +17,12 @@ export class Dashboard {
   totalUsers = computed(() => this.candidateCount() + this.clientCount());
 
   summaryCards = computed(() => [
-    {
-      title: 'Total Users',
-      value: this.totalUsers(),
-      icon: 'pi pi-users',
-      color: 'bg-blue',
-    },
+    // {
+    //   title: 'Total Users',
+    //   value: this.totalUsers(),
+    //   icon: 'pi pi-users',
+    //   color: 'bg-blue',
+    // },
     {
       title: 'Candidates',
       value: this.candidateCount(),

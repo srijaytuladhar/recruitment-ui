@@ -41,7 +41,7 @@ import {ClientService} from '../../services/client.service';
 export class ClientDetailsComponent implements OnInit {
   clientList: any[] = [];
   itemsTemplate = [
-    { label: 'Edit', icon: 'pi pi-refresh', command: (client: any) => console.log('Edit', client) },
+    // { label: 'Edit', icon: 'pi pi-refresh', command: (client: any) => console.log('Edit', client) },
     { label: 'View', icon: 'pi pi-eye', command: (client: any) => this.router.navigate(['client/view', client.id]) },
     {
       label: 'JobList',
@@ -51,7 +51,7 @@ export class ClientDetailsComponent implements OnInit {
         { queryParams: { clientId: client.id } }
       )
     },
-    { label: 'Quit', icon: 'pi pi-power-off', command: () => window.open('https://angular.io/', '_blank') },
+    // { label: 'Quit', icon: 'pi pi-power-off', command: () => window.open('https://angular.io/', '_blank') },
   ];
 
   constructor(

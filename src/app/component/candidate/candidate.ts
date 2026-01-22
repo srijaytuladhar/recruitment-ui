@@ -65,11 +65,11 @@ export class Candidate implements OnInit {
   ];
 
   itemsTemplate = [
-    { label: 'Edit', icon: 'pi pi-refresh', command: (candidate: any) => console.log('Edit', candidate) },
+    // { label: 'Edit', icon: 'pi pi-refresh', command: (candidate: any) => console.log('Edit', candidate) },
     { label: 'View', icon: 'pi pi-eye', command: (candidate: any) => this.router.navigate(['candidates/view', candidate.id]) },
     { label: 'Pre-Screening', icon: 'pi pi-briefcase', command: (candidate: any) => this.navigateToPreScreening(candidate.id) },
 
-    { label: 'Quit', icon: 'pi pi-power-off', command: () => window.open('https://angular.io/', '_blank') },
+    // { label: 'Quit', icon: 'pi pi-power-off', command: () => window.open('https://angular.io/', '_blank') },
   ];
 
   jobRequestId: string | null = null;

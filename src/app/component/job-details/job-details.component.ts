@@ -47,10 +47,10 @@ export class JobDetailsComponent implements OnInit {
   clientIdFilter: string | null = null;
   isFilteredByClient = false;
   itemsTemplate = [
-    { label: 'Edit', icon: 'pi pi-refresh', command: (client: any) => console.log('Edit', client) },
+    // { label: 'Edit', icon: 'pi pi-refresh', command: (client: any) => console.log('Edit', client) },
     { label: 'View', icon: 'pi pi-eye', command: (client: any) => this.router.navigate(['job-details/view', client.id]) },
     // { label: 'Proceed Further', icon: 'pi pi-forward', command: (candidate: any) => this.router.navigate(['candidates/proceed', candidate.id]) },
-    { label: 'Quit', icon: 'pi pi-power-off', command: () => window.open('https://angular.io/', '_blank') },
+    // { label: 'Quit', icon: 'pi pi-power-off', command: () => window.open('https://angular.io/', '_blank') },
   ];
 
   constructor(
