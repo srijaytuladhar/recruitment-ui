@@ -64,7 +64,7 @@
 
               </fieldset>
               <div class="form-row mt-3 flex justify-end"
-                *ngIf="flowType === 'PRE_SCREENING' && process.status?.toUpperCase() !== 'COMPLETED'">
+                *ngIf="(flowType === 'PRE_SCREENING' && process.status?.toUpperCase() !== 'COMPLETED') || (flowType === 'PROCEED_FURTHER' && !preScreeningCompleted)">
                 <p-button label="Next" icon="pi pi-arrow-right" class="p-button-success"
                   (click)="saveAndNext(activateCallback, 2)"></p-button>
               </div>
@@ -97,7 +97,7 @@
 
               </fieldset>
               <div class="form-row mt-3 flex justify-between md:justify-end gap-2"
-                *ngIf="flowType === 'PRE_SCREENING' && process.status?.toUpperCase() !== 'COMPLETED'">
+                *ngIf="(flowType === 'PRE_SCREENING' && process.status?.toUpperCase() !== 'COMPLETED') || (flowType === 'PROCEED_FURTHER' && !preScreeningCompleted)">
                 <p-button label="Back" severity="secondary" icon="pi pi-arrow-left"
                   (click)="activateCallback(1)"></p-button>
                 <p-button label="Next" icon="pi pi-arrow-right" class="p-button-success"
@@ -116,7 +116,7 @@
           <div [@fadeInOut]>
             <div class="p-5 border border-gray-200 rounded-lg shadow-sm bg-white">
               <fieldset
-                [disabled]="flowType === 'PROCEED_FURTHER' || (flowType === 'PRE_SCREENING' && process.status?.toUpperCase() === 'COMPLETED')"
+                [disabled]="(flowType === 'PROCEED_FURTHER' && preScreeningCompleted) || (flowType === 'PRE_SCREENING' && process.status?.toUpperCase() === 'COMPLETED')"
                 style="border:none; padding:0; margin:0;">
                 <div class="form-row mb-4">
                   <label class="block font-semibold mb-2">
@@ -124,7 +124,7 @@
                   </label>
                   <p-select [options]="interviewModes" [(ngModel)]="process.interviewMode" optionLabel="label"
                     optionValue="value"
-                    [disabled]="flowType === 'PROCEED_FURTHER' || (flowType === 'PRE_SCREENING' && process.status?.toUpperCase() === 'COMPLETED')"
+                    [disabled]="(flowType === 'PROCEED_FURTHER' && preScreeningCompleted) || (flowType === 'PRE_SCREENING' && process.status?.toUpperCase() === 'COMPLETED')"
                     placeholder="Select Mode" class="w-full md:w-96"></p-select>
                   <small class="text-gray-500 mt-1 block">
                     Choose whether the interview is Virtual or In Person.
@@ -144,7 +144,7 @@
 
               </fieldset>
               <div class="form-row mt-4 flex justify-between md:justify-end gap-2"
-                *ngIf="flowType === 'PRE_SCREENING' && process.status !== 'COMPLETED'">
+                *ngIf="(flowType === 'PRE_SCREENING' && process.status !== 'COMPLETED') || (flowType === 'PROCEED_FURTHER' && !preScreeningCompleted)">
                 <p-button label="Back" severity="secondary" icon="pi pi-arrow-left"
                   (click)="activateCallback(2)"></p-button>
                 <p-button label="Next" icon="pi pi-arrow-right" class="p-button-success"
@@ -163,7 +163,7 @@
           <div [@fadeInOut]>
             <div class="p-5 border border-gray-200 rounded-lg shadow-sm bg-white">
               <fieldset
-                [disabled]="flowType === 'PROCEED_FURTHER' || (flowType === 'PRE_SCREENING' && process.status?.toUpperCase() === 'COMPLETED')"
+                [disabled]="(flowType === 'PROCEED_FURTHER' && preScreeningCompleted) || (flowType === 'PRE_SCREENING' && process.status?.toUpperCase() === 'COMPLETED')"
                 style="border:none; padding:0; margin:0;">
                 <div class="form-row mb-4">
                   <label class="block font-semibold mb-2">
@@ -203,11 +203,17 @@
 
               </fieldset>
               <div class="form-row mt-4 flex justify-between md:justify-end gap-2"
-                *ngIf="flowType === 'PRE_SCREENING' && process.status?.toUpperCase() !== 'COMPLETED'">
+                *ngIf="(flowType === 'PRE_SCREENING' && process.status?.toUpperCase() !== 'COMPLETED') || (flowType === 'PROCEED_FURTHER' && !preScreeningCompleted)">
                 <p-button label="Back" severity="secondary" icon="pi pi-arrow-left"
                   (click)="activateCallback(3)"></p-button>
-                <p-button label="Complete Pre-Screening" icon="pi pi-check" class="p-button-success"
-                  (click)="saveAndNext(activateCallback, 4, 'COMPLETED')"></p-button>
+
+                <!-- Show 'Next' button in PROCEED_FURTHER flow -->
+                <p-button *ngIf="flowType === 'PROCEED_FURTHER'" label="Next" icon="pi pi-arrow-right"
+                  class="p-button-success" (click)="saveAndNext(activateCallback, 5)"></p-button>
+
+                <!-- Show 'Complete Pre-Screening' button in PRE_SCREENING flow -->
+                <p-button *ngIf="flowType === 'PRE_SCREENING'" label="Complete Pre-Screening" icon="pi pi-check"
+                  class="p-button-success" (click)="saveAndNext(activateCallback, 4, 'COMPLETED')"></p-button>
               </div>
             </div>
           </div>

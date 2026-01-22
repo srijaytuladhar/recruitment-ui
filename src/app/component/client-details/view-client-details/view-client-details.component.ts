@@ -246,8 +246,12 @@ export class ViewClientDetailsComponent implements OnInit {
   }
 
   saveNewContract() {
-    if (!this.newContract.contractPrice || !this.newContract.contractExpiryDate) {
-      this.util.toastr('Please fill in price and expiry date', true);
+    if (!this.newContract.contractPrice) {
+      this.util.toastr('Please fill in contract price', true);
+      return;
+    }
+    if (this.newContract.isClosedEnded && !this.newContract.contractExpiryDate) {
+      this.util.toastr('Please fill in expiry date when contract is closed ended', true);
       return;
     }
     if (this.newContract.isClosedEnded && !this.newContract.contractExpiredMessage) {
@@ -261,6 +265,7 @@ export class ViewClientDetailsComponent implements OnInit {
 
     if (!this.newContract.isClosedEnded) {
       this.newContract.contractExpiredMessage = null;
+      this.newContract.contractExpiryDate = null;
     }
 
     this.contracts.unshift({ ...this.newContract });
@@ -289,6 +294,7 @@ export class ViewClientDetailsComponent implements OnInit {
     if (!event.checked) {
       this.contracts[index].isClosedEnded = false;
       this.contracts[index].contractExpiredMessage = null;
+      this.contracts[index].contractExpiryDate = null;
       this.updateClientContracts();
     }
   }
