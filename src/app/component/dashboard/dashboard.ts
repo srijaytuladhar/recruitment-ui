@@ -26,13 +26,13 @@ export class Dashboard {
     {
       title: 'Candidates',
       value: this.candidateCount(),
-      icon: 'pi pi-wallet',
+      icon: 'pi pi-user',
       color: 'bg-green',
     },
     {
       title: 'Clients',
       value: this.clientCount(),
-      icon: 'pi pi-shopping-cart',
+      icon: 'pi pi-building',
       color: 'bg-orange',
     }
   ]);
