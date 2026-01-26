@@ -329,6 +329,20 @@ export class ViewClientDetailsComponent implements OnInit {
   }
 
   updateClientContracts() {
+    // Validate contracts before saving
+    for (const contract of this.contracts) {
+      if (contract.isClosedEnded) {
+        if (!contract.contractExpiryDate) {
+          this.util.toastr('Contract Expiry Date is required for closed-ended contracts.', true);
+          return;
+        }
+        if (!contract.contractExpiredMessage) {
+          this.util.toastr('Contract Expired Message is required for closed-ended contracts.', true);
+          return;
+        }
+      }
+    }
+
     const payload = { ...this.client };
     payload.contractList = this.contracts;
 
